@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<incidents format="6" by="lint 8.0.0" type="conditional_incidents">
+
+    <incident
+        id="LockedOrientationActivity"
+        severity="warning"
+        message="Expecting `android:screenOrientation=&quot;unspecified&quot;` or `&quot;fullSensor&quot;` for this activity so the user can use the application in any orientation and provide a great experience on Chrome OS devices">
+        <fix-attribute
+            description="Set screenOrientation=&quot;fullSensor&quot;"
+            robot="true"
+            independent="true"
+            namespace="http://schemas.android.com/apk/res/android"
+            attribute="screenOrientation"
+            value="fullSensor"/>
+        <location
+            file="${:app*debug*sourceProvider*0*manifest*0}"
+            line="17"
+            column="13"
+            startOffset="535"
+            endLine="17"
+            endColumn="49"
+            endOffset="571"/>
+        <map>
+            <condition library="false"/>
+        </map>
+    </incident>
+
+    <incident
+        id="MissingPermission"
+        severity="error"
+        message="Call requires permission which may be rejected by user: code should explicitly check to see if permission is available (with `checkPermission`) or explicitly handle a potential `SecurityException`">
+        <fix-data missing="android.permission.RECORD_AUDIO" requirement="android.permission.RECORD_AUDIO"/>
+        <location
+            file="${:app*debug*sourceProvider*0*javaDir*0}/com/example/waveform/AudioRecorder.java"
+            line="33"
+            column="27"
+            startOffset="1013"
+            endLine="39"
+            endColumn="14"
+            endOffset="1209"/>
+    </incident>
+
+</incidents>

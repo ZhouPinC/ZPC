@@ -1,0 +1,32 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/google/' }
+        maven { url 'https://maven.aliyun.com/repository/gradle-plugin/' }
+        // 原始仓库（放在后面）
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+
+    }
+    dependencies {
+//        classpath 'com.android.tools.build:gradle:8.0.0'
+        // 其他依赖
+        // 升级或指定 R8 版本
+        classpath "com.android.tools.build:gradle:8.13.1" // 请检查并使用最新版本
+    }
+}
+
+allprojects {
+    repositories {
+
+        maven { url 'https://maven.aliyun.com/repository/public/' }
+        maven { url 'https://maven.aliyun.com/repository/google/' }
+        google()
+        mavenCentral()  // 这里也要添加
+
+    }
+}
+//task clean(type: Delete) {
+//    delete rootProject.buildDir
+//}

@@ -1,0 +1,29 @@
+pluginManagement {
+    repositories {
+        // 1. 阿里云谷歌镜像（插件专用）
+        maven { url "https://maven.aliyun.com/repository/google" }
+        // 2. 阿里云中央仓库（第三方依赖专用，关键补充！）
+        maven { url "https://maven.aliyun.com/repository/central" }
+        // 3. 阿里云公共仓库（兜底，部分依赖可能在这）
+        maven { url "https://maven.aliyun.com/repository/public" }
+        // 官方仓库（备选）
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.PREFER_SETTINGS)
+    repositories {
+        // 与插件仓库配置一致，确保项目依赖也能找到
+        maven { url "https://maven.aliyun.com/repository/google" }
+        maven { url "https://maven.aliyun.com/repository/central" }
+        maven { url "https://maven.aliyun.com/repository/public" }
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name = "Waveform"
+include ':app'
