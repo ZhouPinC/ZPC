@@ -21,12 +21,12 @@
                 {
                     "source": "C:\\Users\\76249\\Desktop\\ZPC\\Android\\app\\src\\main\\res\\values\\styles.xml",
                     "from": {
-                        "startLines": "1,5",
-                        "startColumns": "4,4",
-                        "startOffsets": "16,171",
-                        "endLines": "3,8",
-                        "endColumns": "12,12",
-                        "endOffsets": "161,371"
+                        "startLines": "1,-1",
+                        "startColumns": "4,-1",
+                        "startOffsets": "16,-1",
+                        "endLines": "3,-1",
+                        "endColumns": "12,-1",
+                        "endOffsets": "161,-1"
                     },
                     "to": {
                         "startLines": "2112,5462",

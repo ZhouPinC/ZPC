@@ -10,6 +10,7 @@ color teal_200
 color teal_700
 color white
 drawable bg_black_box
+drawable bg_bottom_sheet_rounded
 drawable bg_record_btn_inner_rec
 drawable bg_record_btn_inner_stop
 drawable bg_record_btn_outer
@@ -17,9 +18,11 @@ drawable bg_record_button_inner_red
 drawable bg_record_button_outer
 drawable bg_recorder_dialog
 drawable ic_mic_red_circle
+id bottomSheetRoot
 id btnHistory
 id btnRecord
 id btnRecordAction
+id btnRecordBg
 id cardRecorder
 id dialog_content_container
 id recorderBox
@@ -34,6 +37,7 @@ layout activity_main
 layout dialog_recorder
 layout dialog_recorder_fullscreen
 layout fragment_recorder
+layout fragment_recorder_bottom_sheet
 string app_name
 string record_permission_required
 string start_recording

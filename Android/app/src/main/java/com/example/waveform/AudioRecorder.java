@@ -4,8 +4,6 @@ import android.content.Context;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
-import android.os.Environment;
-import android.os.Process;
 import android.util.Log;
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,21 +14,17 @@ import java.util.Date;
 import java.util.Locale;
 
 public class AudioRecorder {
-
     private static final int SAMPLE_RATE = 44100;
     private static final int CHANNEL_CONFIG = AudioFormat.CHANNEL_IN_MONO;
     private static final int AUDIO_FORMAT = AudioFormat.ENCODING_PCM_16BIT;
-    // 安全获取缓冲区大小，避免模拟器上可能出现的负数错误
     private static final int BUFFER_SIZE = Math.max(
-            AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT),
-            4096 // 默认最小 fallback 值
-    );
+            AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT), 4096);
 
     private AudioRecord audioRecord;
     private Thread recordingThread;
     private volatile boolean isRecording = false;
     private OnAmplitudeListener amplitudeListener;
-    private File currentRawFile;
+    private File currentPcmFile;
     private Context context;
 
     public interface OnAmplitudeListener {
@@ -48,20 +42,14 @@ public class AudioRecorder {
     public void startRecording() {
         if (isRecording) return;
         try {
-            // 创建文件
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
-            File dir = new File(context.getExternalFilesDir(Environment.DIRECTORY_MUSIC), "Recordings");
-            if (!dir.exists()) dir.mkdirs();
-            currentRawFile = new File(dir, "REC_" + timeStamp + ".pcm"); // 暂存PCM
-
+            // 创建临时文件
+            currentPcmFile = new File(context.getExternalCacheDir(), "temp_raw.pcm");
+            
             audioRecord = new AudioRecord(MediaRecorder.AudioSource.MIC, SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT, BUFFER_SIZE);
-            if (audioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
-                Log.e("AudioRecorder", "AudioRecord initialize failed");
-                return;
-            }
+            if (audioRecord.getState() != AudioRecord.STATE_INITIALIZED) return;
 
             isRecording = true;
-            recordingThread = new Thread(new RecordingRunnable(), "AudioRecorderThread");
+            recordingThread = new Thread(new RecordingRunnable());
             recordingThread.start();
         } catch (Exception e) {
             e.printStackTrace();
@@ -71,7 +59,7 @@ public class AudioRecorder {
 
     /**
      * 停止录音并保存为 WAV
-     * @return 最终的 WAV 文件路径
+     * @return 最终 WAV 文件的路径
      */
     public String stopRecording() {
         isRecording = false;
@@ -79,19 +67,19 @@ public class AudioRecorder {
             try {
                 audioRecord.stop();
                 audioRecord.release();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            } catch (Exception e) { e.printStackTrace(); }
             audioRecord = null;
         }
-        // 线程会通过 isRecording 标志自然退出
-        recordingThread = null;
 
-        // 转换 PCM 到 WAV
-        if (currentRawFile != null && currentRawFile.exists()) {
-            File wavFile = new File(currentRawFile.getParent(), currentRawFile.getName().replace(".pcm", ".wav"));
-            rawToWave(currentRawFile, wavFile);
-            currentRawFile.delete(); // 删除原始 PCM
+        // 将 PCM 转为 WAV 并保存到正式目录
+        if (currentPcmFile != null && currentPcmFile.exists()) {
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
+            File dir = new File(context.getExternalFilesDir(null), "Recordings");
+            if (!dir.exists()) dir.mkdirs();
+            File wavFile = new File(dir, "录音_" + timeStamp + ".wav");
+            
+            pcmToWav(currentPcmFile, wavFile);
+            currentPcmFile.delete(); // 删除临时文件
             return wavFile.getAbsolutePath();
         }
         return null;
@@ -100,41 +88,31 @@ public class AudioRecorder {
     private class RecordingRunnable implements Runnable {
         @Override
         public void run() {
-            Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_AUDIO);
-
-            if (audioRecord == null || audioRecord.getState() != AudioRecord.STATE_INITIALIZED) {
-                return;
-            }
-
+            if (audioRecord == null) return;
             audioRecord.startRecording();
             byte[] buffer = new byte[BUFFER_SIZE];
             FileOutputStream os = null;
-            
-            // [关键修复] 限制UI更新频率为每40ms一次 (25fps)，防止ANR崩溃
-            long lastUiUpdate = 0;
-            final long UPDATE_INTERVAL_MS = 40;
 
             try {
-                os = new FileOutputStream(currentRawFile);
+                os = new FileOutputStream(currentPcmFile);
+                long lastUiUpdate = 0;
                 while (isRecording) {
                     int read = audioRecord.read(buffer, 0, buffer.length);
                     if (read > 0) {
                         os.write(buffer, 0, read);
-                        
-                        if (amplitudeListener != null) {
-                            long now = System.currentTimeMillis();
-                            if (now - lastUiUpdate > UPDATE_INTERVAL_MS) {
-                                float amplitude = calculateAmplitude(buffer, read);
-                                amplitudeListener.onAmplitudeUpdate(amplitude);
-                                lastUiUpdate = now;
-                            }
+                        // 节流更新 UI，防止卡顿
+                        long now = System.currentTimeMillis();
+                        if (now - lastUiUpdate > 40 && amplitudeListener != null) {
+                            float amplitude = calculateAmplitude(buffer, read);
+                            amplitudeListener.onAmplitudeUpdate(amplitude);
+                            lastUiUpdate = now;
                         }
                     }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
-                try { if (os != null) os.close(); } catch (IOException e) { e.printStackTrace(); }
+                try { if (os != null) os.close(); } catch (IOException e) {}
             }
         }
 
@@ -148,29 +126,28 @@ public class AudioRecorder {
         }
     }
 
-    // --- WAV Header Helper ---
-    private void rawToWave(File rawFile, File waveFile) {
-        try (FileInputStream in = new FileInputStream(rawFile);
-             FileOutputStream out = new FileOutputStream(waveFile)) {
+    // --- WAV Header 转换逻辑 ---
+    private void pcmToWav(File pcmFile, File wavFile) {
+        try (FileInputStream in = new FileInputStream(pcmFile);
+             FileOutputStream out = new FileOutputStream(wavFile)) {
             long totalAudioLen = in.getChannel().size();
             long totalDataLen = totalAudioLen + 36;
             long longSampleRate = SAMPLE_RATE;
             int channels = 1;
             long byteRate = 16 * SAMPLE_RATE * channels / 8;
 
-            writeWaveFileHeader(out, totalAudioLen, totalDataLen, longSampleRate, channels, byteRate);
+            writeWavHeader(out, totalAudioLen, totalDataLen, longSampleRate, channels, byteRate);
 
             byte[] data = new byte[BUFFER_SIZE];
-            while (in.read(data) != -1) {
-                out.write(data);
+            int count;
+            while ((count = in.read(data)) != -1) {
+                out.write(data, 0, count);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) { e.printStackTrace(); }
     }
 
-    private void writeWaveFileHeader(FileOutputStream out, long totalAudioLen, long totalDataLen,
-                                     long longSampleRate, int channels, long byteRate) throws IOException {
+    private void writeWavHeader(FileOutputStream out, long totalAudioLen, long totalDataLen,
+                                long longSampleRate, int channels, long byteRate) throws IOException {
         byte[] header = new byte[44];
         header[0] = 'R'; header[1] = 'I'; header[2] = 'F'; header[3] = 'F';
         header[4] = (byte) (totalDataLen & 0xff); header[5] = (byte) ((totalDataLen >> 8) & 0xff);
@@ -188,9 +165,5 @@ public class AudioRecorder {
         header[40] = (byte) (totalAudioLen & 0xff); header[41] = (byte) ((totalAudioLen >> 8) & 0xff);
         header[42] = (byte) ((totalAudioLen >> 16) & 0xff); header[43] = (byte) ((totalAudioLen >> 24) & 0xff);
         out.write(header, 0, 44);
-    }
-
-    public boolean isRecording() {
-        return isRecording;
     }
 }

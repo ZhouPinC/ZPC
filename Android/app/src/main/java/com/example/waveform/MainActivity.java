@@ -9,23 +9,19 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 public class MainActivity extends AppCompatActivity {
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // 点击方形组件，弹出全屏录音界面
-        findViewById(R.id.cardRecorder).setOnClickListener(v -> {
+        View cardRecorder = findViewById(R.id.cardRecorder);
+        cardRecorder.setOnClickListener(v -> {
             if (checkPermission()) {
-                showRecorderDialog();
+                // 使用新的 BottomSheet Fragment
+                RecorderBottomSheetFragment bottomSheet = new RecorderBottomSheetFragment();
+                bottomSheet.show(getSupportFragmentManager(), "RecorderSheet");
             }
         });
-    }
-
-    private void showRecorderDialog() {
-        RecorderDialogFragment dialog = new RecorderDialogFragment();
-        dialog.show(getSupportFragmentManager(), "RecorderFullscreen");
     }
 
     private boolean checkPermission() {

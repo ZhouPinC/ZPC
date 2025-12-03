@@ -16,8 +16,22 @@ public class AudioWaveformView extends View {
     private float minHeight = 10f;
     private float maxHeight = 150f;
 
+    public AudioWaveformView(Context context) {
+        super(context);
+        init();
+    }
+
     public AudioWaveformView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
+    }
+
+    public AudioWaveformView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    private void init() {
         paint = new Paint();
         paint.setColor(0xFFFF3B30); // iOS Red
         paint.setStyle(Paint.Style.FILL);
