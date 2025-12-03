@@ -2110,11 +2110,8 @@
     <item name="android:windowEnterAnimation">@anim/mtrl_bottom_sheet_slide_in</item>
     <item name="android:windowExitAnimation">@anim/mtrl_bottom_sheet_slide_out</item>
   </style>
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        
-        <item name="colorPrimary">@color/ios_blue</item>
-        <item name="colorPrimaryDark">@color/purple_700</item>
-        <item name="colorAccent">@color/teal_200</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/black</item>
     </style>
     <style name="Base.AlertDialog.AppCompat" parent="android:Widget">
         <item name="android:layout">@layout/abc_alert_dialog_material</item>
@@ -5463,6 +5460,10 @@
     <style name="CardView.Light">
         <item name="cardBackgroundColor">@color/cardview_light_background</item>
     </style>
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/scale_up_enter</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    </style>
     <style name="MaterialAlertDialog.Material3" parent="MaterialAlertDialog.MaterialComponents">
     <item name="enforceMaterialTheme">true</item>
     <item name="android:layout">@layout/m3_alert_dialog</item>
@@ -6283,12 +6284,9 @@
     <style name="Theme.AppCompat.Light.Dialog.MinWidth" parent="Base.Theme.AppCompat.Light.Dialog.MinWidth"/>
     <style name="Theme.AppCompat.Light.DialogWhenLarge" parent="Base.Theme.AppCompat.Light.DialogWhenLarge">
     </style>
-    <style name="Theme.AppCompat.Light.NoActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="Theme.AppCompat.Light.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="colorPrimary">@color/ios_blue</item>
-        <item name="colorPrimaryDark">@color/purple_700</item>
-        <item name="colorAccent">@color/teal_200</item>
     </style>
     <style name="Theme.AppCompat.NoActionBar">
         <item name="windowActionBar">false</item>

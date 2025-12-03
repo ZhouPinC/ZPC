@@ -1,0 +1,54 @@
+[
+    {
+        "merged": "C:\\Users\\76249\\.gradle\\daemon\\8.13\\com.example.waveform.app-debug-28:\\drawable_bg_record_btn_outer.xml.flat",
+        "source": "C:\\Users\\76249\\.gradle\\daemon\\8.13\\com.example.waveform.app-main-30:\\drawable\\bg_record_btn_outer.xml"
+    },
+    {
+        "merged": "com.example.waveform.app-debug-28:/drawable_ic_mic_red_circle.xml.flat",
+        "source": "com.example.waveform.app-main-30:/drawable/ic_mic_red_circle.xml"
+    },
+    {
+        "merged": "com.example.waveform.app-debug-28:/layout_dialog_recorder_fullscreen.xml.flat",
+        "source": "com.example.waveform.app-main-30:/layout/dialog_recorder_fullscreen.xml"
+    },
+    {
+        "merged": "com.example.waveform.app-debug-28:/layout_activity_main.xml.flat",
+        "source": "com.example.waveform.app-main-30:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.example.waveform.app-debug-28:/drawable_bg_record_button_outer.xml.flat",
+        "source": "com.example.waveform.app-main-30:/drawable/bg_record_button_outer.xml"
+    },
+    {
+        "merged": "C:\\Users\\76249\\.gradle\\daemon\\8.13\\com.example.waveform.app-debug-28:\\drawable_bg_recorder_dialog.xml.flat",
+        "source": "C:\\Users\\76249\\.gradle\\daemon\\8.13\\com.example.waveform.app-main-30:\\drawable\\bg_recorder_dialog.xml"
+    },
+    {
+        "merged": "com.example.waveform.app-debug-28:/drawable_bg_record_button_inner_red.xml.flat",
+        "source": "com.example.waveform.app-main-30:/drawable/bg_record_button_inner_red.xml"
+    },
+    {
+        "merged": "com.example.waveform.app-debug-28:/anim_scale_up_enter.xml.flat",
+        "source": "com.example.waveform.app-main-30:/anim/scale_up_enter.xml"
+    },
+    {
+        "merged": "C:\\Users\\76249\\.gradle\\daemon\\8.13\\com.example.waveform.app-debug-28:\\drawable_bg_record_btn_inner_rec.xml.flat",
+        "source": "C:\\Users\\76249\\.gradle\\daemon\\8.13\\com.example.waveform.app-main-30:\\drawable\\bg_record_btn_inner_rec.xml"
+    },
+    {
+        "merged": "C:\\Users\\76249\\.gradle\\daemon\\8.13\\com.example.waveform.app-debug-28:\\layout_fragment_recorder.xml.flat",
+        "source": "C:\\Users\\76249\\.gradle\\daemon\\8.13\\com.example.waveform.app-main-30:\\layout\\fragment_recorder.xml"
+    },
+    {
+        "merged": "C:\\Users\\76249\\.gradle\\daemon\\8.13\\com.example.waveform.app-debug-28:\\drawable_bg_record_btn_inner_stop.xml.flat",
+        "source": "C:\\Users\\76249\\.gradle\\daemon\\8.13\\com.example.waveform.app-main-30:\\drawable\\bg_record_btn_inner_stop.xml"
+    },
+    {
+        "merged": "C:\\Users\\76249\\.gradle\\daemon\\8.13\\com.example.waveform.app-debug-28:\\layout_dialog_recorder.xml.flat",
+        "source": "C:\\Users\\76249\\.gradle\\daemon\\8.13\\com.example.waveform.app-main-30:\\layout\\dialog_recorder.xml"
+    },
+    {
+        "merged": "C:\\Users\\76249\\.gradle\\daemon\\8.13\\com.example.waveform.app-debug-28:\\drawable_bg_black_box.xml.flat",
+        "source": "C:\\Users\\76249\\.gradle\\daemon\\8.13\\com.example.waveform.app-main-30:\\drawable\\bg_black_box.xml"
+    }
+]

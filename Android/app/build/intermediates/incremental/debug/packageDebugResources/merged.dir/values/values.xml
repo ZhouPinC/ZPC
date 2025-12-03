@@ -12,17 +12,11 @@
     <string name="record_permission_required">需要录音权限</string>
     <string name="start_recording">开始录音</string>
     <string name="stop_recording">停止录音</string>
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        
-        <item name="colorPrimary">@color/ios_blue</item>
-        <item name="colorPrimaryDark">@color/purple_700</item>
-        <item name="colorAccent">@color/teal_200</item>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/black</item>
     </style>
-    <style name="Theme.AppCompat.Light.NoActionBar" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-        <item name="colorPrimary">@color/ios_blue</item>
-        <item name="colorPrimaryDark">@color/purple_700</item>
-        <item name="colorAccent">@color/teal_200</item>
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/scale_up_enter</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
 </resources>

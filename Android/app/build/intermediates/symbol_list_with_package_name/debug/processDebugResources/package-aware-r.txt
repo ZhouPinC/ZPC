@@ -41,6 +41,7 @@ anim m3_side_sheet_slide_out
 anim mtrl_bottom_sheet_slide_in
 anim mtrl_bottom_sheet_slide_out
 anim mtrl_card_lowers_interpolator
+anim scale_up_enter
 animator design_appbar_state_list_animator
 animator design_fab_hide_motion_spec
 animator design_fab_show_motion_spec
@@ -2907,6 +2908,13 @@ drawable abc_textfield_search_material
 drawable abc_vector_test
 drawable avd_hide_password
 drawable avd_show_password
+drawable bg_black_box
+drawable bg_record_btn_inner_rec
+drawable bg_record_btn_inner_stop
+drawable bg_record_btn_outer
+drawable bg_record_button_inner_red
+drawable bg_record_button_outer
+drawable bg_recorder_dialog
 drawable btn_checkbox_checked_mtrl
 drawable btn_checkbox_checked_to_unchecked_mtrl_animation
 drawable btn_checkbox_unchecked_mtrl
@@ -2927,6 +2935,7 @@ drawable ic_keyboard_black_24dp
 drawable ic_m3_chip_check
 drawable ic_m3_chip_checked_circle
 drawable ic_m3_chip_close
+drawable ic_mic_red_circle
 drawable ic_mtrl_checked_circle
 drawable ic_mtrl_chip_checked_black
 drawable ic_mtrl_chip_checked_circle
@@ -3104,10 +3113,14 @@ id bounce
 id bounceBoth
 id bounceEnd
 id bounceStart
+id btnHistory
+id btnRecord
+id btnRecordAction
 id buttonPanel
 id cache_measures
 id callMeasure
 id cancel_button
+id cardRecorder
 id carryVelocity
 id center
 id centerCrop
@@ -3156,6 +3169,7 @@ id design_menu_item_action_area_stub
 id design_menu_item_text
 id design_navigation_view
 id dialog_button
+id dialog_content_container
 id dimensions
 id direct
 id disableHome
@@ -3347,12 +3361,15 @@ id progress_circular
 id progress_horizontal
 id radio
 id ratio
+id recorderBox
 id rectangles
 id reverseSawtooth
 id right
 id rightToLeft
 id right_icon
 id right_side
+id rootContainer
+id rootLayout
 id rounded
 id row_index_key
 id save_non_transition_alpha
@@ -3467,6 +3484,7 @@ id title_template
 id toggle
 id top
 id topPanel
+id touchOutside
 id touch_outside
 id transitionToEnd
 id transitionToStart
@@ -3476,6 +3494,9 @@ id transition_position
 id transition_scene_layoutid_cache
 id transition_transform
 id triangle
+id tvHint
+id tvStatus
+id tvTimer
 id unchecked
 id uniform
 id unlabeled
@@ -3490,6 +3511,7 @@ id view_tree_saved_state_registry_owner
 id view_tree_view_model_store_owner
 id visible
 id visible_removing_fragment_view_tag
+id waveformView
 id west
 id withText
 id with_icon
@@ -3612,6 +3634,7 @@ layout abc_search_dropdown_item_icons_2line
 layout abc_search_view
 layout abc_select_dialog_material
 layout abc_tooltip
+layout activity_main
 layout custom_dialog
 layout design_bottom_navigation_item
 layout design_bottom_sheet_dialog
@@ -3628,6 +3651,9 @@ layout design_navigation_menu
 layout design_navigation_menu_item
 layout design_text_input_end_icon
 layout design_text_input_start_icon
+layout dialog_recorder
+layout dialog_recorder_fullscreen
+layout fragment_recorder
 layout m3_alert_dialog
 layout m3_alert_dialog_actions
 layout m3_alert_dialog_title
@@ -4137,6 +4163,7 @@ style Base_Widget_MaterialComponents_TextView
 style CardView
 style CardView_Dark
 style CardView_Light
+style DialogAnimation
 style MaterialAlertDialog_Material3
 style MaterialAlertDialog_Material3_Animation
 style MaterialAlertDialog_Material3_Body_Text

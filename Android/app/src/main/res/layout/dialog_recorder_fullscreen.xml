@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#D9000000">
+    
+    <View
+        android:id="@+id/touchOutside"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="32dp">
+
+        <TextView
+            android:id="@+id/btnHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="20dp"
+            android:text="History"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:background="?selectableItemBackgroundBorderless"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/tvTimer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00:00"
+                android:textColor="#FFFFFF"
+                android:textSize="50sp"
+                android:fontFamily="sans-serif-light"
+                android:letterSpacing="0.05"/>
+
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Ready"
+                android:textColor="#88FFFFFF"
+                android:textSize="14sp"/>
+
+            <com.example.waveform.AudioWaveformView
+                android:id="@+id/waveformView"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:layout_marginTop="40dp"/>
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="40dp">
+            
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_record_button_outer"/>
+                
+            <View
+                android:id="@+id/btnRecord"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_record_button_inner_red"/>
+        </FrameLayout>
+
+    </RelativeLayout>
+</FrameLayout>

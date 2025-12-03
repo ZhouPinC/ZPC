@@ -1,5 +1,6 @@
 R_DEF: Internal format may change without notice
 local
+anim scale_up_enter
 color black
 color ios_blue
 color purple_200
@@ -8,9 +9,34 @@ color purple_700
 color teal_200
 color teal_700
 color white
+drawable bg_black_box
+drawable bg_record_btn_inner_rec
+drawable bg_record_btn_inner_stop
+drawable bg_record_btn_outer
+drawable bg_record_button_inner_red
+drawable bg_record_button_outer
+drawable bg_recorder_dialog
+drawable ic_mic_red_circle
+id btnHistory
+id btnRecord
+id btnRecordAction
+id cardRecorder
+id dialog_content_container
+id recorderBox
+id rootContainer
+id rootLayout
+id touchOutside
+id tvHint
+id tvStatus
+id tvTimer
+id waveformView
+layout activity_main
+layout dialog_recorder
+layout dialog_recorder_fullscreen
+layout fragment_recorder
 string app_name
 string record_permission_required
 string start_recording
 string stop_recording
 style AppTheme
-style Theme.AppCompat.Light.NoActionBar
+style DialogAnimation
