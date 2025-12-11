@@ -75,16 +75,26 @@ public class RecordHistoryActivity extends AppCompatActivity {
             if (baseDir == null) {
                 // 尝试 fallback 到内部存储
                 baseDir = getFilesDir();
+                Log.d("History", "Using internal storage: " + baseDir.getAbsolutePath());
+            } else {
+                Log.d("History", "Using external storage: " + baseDir.getAbsolutePath());
             }
 
             File dir = new File(baseDir, "Recordings");
             if (!dir.exists()) {
                 boolean created = dir.mkdirs();
-                if (!created) Log.e("History", "Directory creation failed");
+                if (!created) {
+                    Log.e("History", "Directory creation failed for: " + dir.getAbsolutePath());
+                } else {
+                    Log.d("History", "Directory created: " + dir.getAbsolutePath());
+                }
             }
 
+            Log.d("History", "Checking directory: " + dir.getAbsolutePath());
             File[] files = dir.listFiles();
-            if (files != null && files.length > 0) {
+
+            if (files != null) {
+                Log.d("History", "Found " + files.length + " files in directory");
                 // 按时间倒序
                 Arrays.sort(files, (f1, f2) -> Long.compare(f2.lastModified(), f1.lastModified()));
                 for (File f : files) {
@@ -92,13 +102,18 @@ public class RecordHistoryActivity extends AppCompatActivity {
                         recordFiles.add(f);
                         long sizeKb = f.length() / 1024;
                         fileNames.add(f.getName() + "\n" + sizeKb + " KB");
+                        Log.d("History", "Added file: " + f.getName() + " (" + sizeKb + " KB)");
                     }
                 }
+            } else {
+                Log.d("History", "No files found or directory not accessible");
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            Toast.makeText(this, "加载文件出错: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e("History", "Error loading files", e);
+            Toast.makeText(this, "加载文件出错: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
+
+        Log.d("History", "Total valid files: " + fileNames.size());
 
         if (fileNames.isEmpty()) {
             listView.setVisibility(View.GONE);
