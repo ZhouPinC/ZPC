@@ -1,0 +1,7 @@
+{
+  "name": "小周AI库",
+  "description": "一个仿DeepSeek风格的AI对话应用，支持多模型切换、历史记录管理及联网搜索功能。",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
