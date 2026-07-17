@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="VoiceWaveView">
+        <attr name="waveColor" format="color" />
+        <attr name="waveBarWidth" format="dimension" />
+        <attr name="waveGap" format="dimension" />
+        <attr name="waveMinHeight" format="dimension" />
+        <attr name="waveMaxHeight" format="dimension" />
+        <attr name="waveCornerRadius" format="dimension" />
+    </declare-styleable>
+</resources>
