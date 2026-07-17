@@ -15,11 +15,16 @@
 |------|------|
 | [VoiceWave-Flutter](./flutter/VoiceWave-Flutter/) | 录音波形可视化组件（Dart） |
 
+## 📲 微信小程序
+
+| 项目 | 简介 |
+|------|------|
+| [XiaoZhou-AI](./miniapp/XiaoZhou-AI/) | AI 对话应用（React + Gemini API） |
+
 ## 🎨 前端
 
 | 项目 | 简介 |
 |------|------|
-| [XiaoZhou-AI](./frontend/XiaoZhou-AI/) | AI 对话应用（React + Gemini API） |
 | [Resume-Editor](./frontend/Resume-Editor/) | 在线简历编辑器（React） |
 
 ## ⚙️ 后端
