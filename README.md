@@ -10,5 +10,3 @@
 | [XiaoZhou-AI](./XiaoZhou-AI/) | 🤖 仿 DeepSeek 风格 AI 对话应用 |
 | [Resume-Editor](./Resume-Editor/) | 🎨 在线简历编辑器 |
 | [GuessNumber-Game](./GuessNumber-Game/) | 🕹️ 三端猜数字游戏平台 |
-
-另见 Fork 项目：[hx-esp32-cam-fpv](https://github.com/ZhouPinC/hx-esp32-cam-fpv)（ESP32 开源数字 FPV 图传系统）
