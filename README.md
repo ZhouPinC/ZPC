@@ -27,7 +27,3 @@
 | 项目 | 简介 |
 |------|------|
 | [GuessNumber-Game](./backend/GuessNumber-Game/) | 猜数字游戏平台（Spring Boot + WebSocket） |
-
----
-
-Fork 项目：[hx-esp32-cam-fpv](https://github.com/ZhouPinC/hx-esp32-cam-fpv)（ESP32 数字 FPV）
