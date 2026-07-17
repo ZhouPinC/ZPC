@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏后台管理</title>
+    <link rel="stylesheet" href="/css/admin.css">
+</head>
+<body>
+<div class="admin-container">
+    <header class="admin-header">
+        <h1>游戏数据管理系统</h1>
+        <div class="user-info">
+            <span>管理员</span>
+            <a href="/logout" class="logout-btn">退出登录</a>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <div class="stats-overview">
+            <div class="stat-card">
+                <h3>总游戏次数</h3>
+                <p id="total-games" class="stat-value">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>总用户数</h3>
+                <p id="total-users" class="stat-value">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>平均得分</h3>
+                <p id="avg-score" class="stat-value">0</p>
+            </div>
+        </div>
+
+        <section class="data-section">
+            <h2>游戏记录列表</h2>
+            <div class="data-filters">
+                <select id="filter-type">
+                    <option value="all">所有类型</option>
+                    <option value="win">胜利</option>
+                    <option value="lose">失败</option>
+                    <option value="giveup">放弃</option>
+                </select>
+                <button id="refresh-btn">刷新数据</button>
+                <button id="clear-btn" class="danger-btn">清空所有记录</button>
+            </div>
+
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>客户端ID</th>
+                        <th>类型</th>
+                        <th>游戏难度</th>
+                        <th>结果</th>
+                        <th>尝试次数</th>
+                        <th>得分</th>
+                        <th>更新时间</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="data-table-body">
+                    <tr th:each="data : ${allData}">
+                        <td th:text="${data.id}"></td>
+                        <td th:text="${data.clientId}"></td>
+                        <td th:text="${data.clientType}"></td>
+                        <td>
+                            <!-- 先判断关键字段是否非空，避免空指针 -->
+                            <th:block th:if="${data.minValue != null and data.maxValue != null and data.maxAttempts != null and data.gameMode != null}">
+                                <th:block th:with="range=${data.maxValue - data.minValue},
+                          log2Range=${range > 0 ? T(java.lang.Math).log(range)/T(java.lang.Math).log(2) : 0}">
+                                    <!-- 困难模式（challenge）评价 -->
+                                    <th:block th:if="${data.gameType == 'challenge'}">
+                                        <span th:if="${data.maxAttempts > log2Range}" class="badge bg-warning">就这</span>
+                                        <span th:if="${data.maxAttempts < log2Range}" class="badge bg-success">实力</span>
+                                        <span th:if="${data.maxAttempts == log2Range}" class="badge bg-secondary">中等</span>
+                                    </th:block>
+                                    <!-- 普通模式（guess）评价 -->
+                                    <th:block th:else>
+                                        <span th:if="${data.maxAttempts > log2Range}" class="badge bg-info">简单</span>
+                                        <span th:if="${data.maxAttempts < log2Range}" class="badge bg-danger">困难</span>
+                                        <span th:if="${data.maxAttempts == log2Range}" class="badge bg-primary">普通</span>
+                                    </th:block>
+                                </th:block>
+                            </th:block>
+                            <!-- 字段为空时显示默认文本 -->
+                            <th:block th:else>
+                                <span class="badge bg-light text-dark">数据不完整</span>
+                            </th:block>
+                        </td>
+                        <td>
+                                    <span th:class="|result-badge ${data.result == 'win' ? 'success' : (data.result == 'lose' ? 'danger' : 'warning')}|"
+                                          th:text="${data.result == 'win' ? '胜利' : (data.result == 'lose' ? '失败' : '放弃')}"></span>
+                        </td>
+                        <td th:text="${data.attempts}"></td>
+                        <td th:text="${data.score}"></td>
+                        <td th:text="${data.updateTime}"></td>
+                        <td>
+                            <button class="action-btn view-btn" th:data-id="${data.id}">查看</button>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="empty-state" th:if="${allData.size() == 0}">
+                <p>暂无游戏数据记录</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="admin-footer">
+        <p>© 2023 猜数字游戏管理系统 | <a href="/game">返回游戏</a></p>
+    </footer>
+</div>
+
+<!-- 详情弹窗 -->
+<div id="detail-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>游戏详情</h3>
+            <button id="close-modal" class="close-btn">&times;</button>
+        </div>
+        <div class="modal-body" id="detail-content">
+            <!-- 详情内容将通过JS填充 -->
+        </div>
+        <div class="modal-footer">
+            <button id="close-detail" class="modal-btn">关闭</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let socket;
+
+        // WebSocket 连接（实时刷新）
+        try {
+            socket = new WebSocket('ws://' + window.location.host + '/gameSync');
+            socket.onmessage = function(event) {
+                refreshData();
+            };
+        } catch (e) {
+            console.error('WebSocket连接失败:', e);
+        }
+
+        // 刷新按钮
+        document.getElementById('refresh-btn').addEventListener('click', refreshData);
+
+        // 筛选变化时刷新
+        document.getElementById('filter-type').addEventListener('change', refreshData);
+
+        // 弹窗
+        const detailModal = document.getElementById('detail-modal');
+        document.getElementById('close-modal').addEventListener('click', () => {
+            detailModal.style.display = 'none';
+        });
+        document.getElementById('close-detail').addEventListener('click', () => {
+            detailModal.style.display = 'none';
+        });
+        window.addEventListener('click', (e) => {
+            if (e.target === detailModal) {
+                detailModal.style.display = 'none';
+            }
+        });
+
+        // 初始化数据
+        refreshData();
+
+        // 刷新数据
+        function refreshData() {
+            fetch('/api/allData')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('=== 后端返回数据详情 ===');
+                    console.log('数据条数:', data.length);
+                    if (data.length > 0) {
+                        console.log('第一条完整数据:', JSON.stringify(data[0], null, 2));
+                        console.log('字段详情:');
+                        console.log('- id:', data[0].id);
+                        console.log('- gameType:', data[0].gameType);
+                        console.log('- target:', data[0].target);
+                        console.log('- result:', data[0].result);
+                        console.log('- attempts:', data[0].attempts);
+                        console.log('- currentHistory:', data[0].currentHistory);
+                        console.log('- currentHistory 类型:', typeof data[0].currentHistory);
+                        if (data[0].currentHistory) {
+                            console.log('- currentHistory 长度:',
+                                Array.isArray(data[0].currentHistory) ? data[0].currentHistory.length : '不是数组');
+                        }
+                    }
+                    updateTable(data);
+                    updateStats(data);
+                })
+                .catch(error => console.error('获取数据失败:', error));
+        }
+
+        // 清空按钮事件
+        document.getElementById('clear-btn').addEventListener('click', function() {
+            if (confirm('确定要清空所有游戏记录吗？此操作不可恢复！')) {
+                fetch('/admin/clearAll', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'}
+                }).then(response => {
+                    if (response.ok) {
+                        refreshData();
+                        alert('所有记录已清空');
+                    }
+                }).catch(error => console.error('清空数据失败:', error));
+            }
+        });
+
+
+        // 表格刷新
+        function updateTable(data) {
+            const filterType = document.getElementById('filter-type').value;
+            const tableBody = document.getElementById('data-table-body');
+            tableBody.innerHTML = '';
+
+
+
+            let filteredData = data;
+            if (filterType !== 'all') {
+                filteredData = data.filter(item => item.result === filterType);
+            }
+
+
+
+            // 按时间倒序排序（最近的记录在前面）
+            filteredData.sort((a, b) => new Date(b.updateTime) - new Date(a.updateTime));
+
+
+
+            if (filteredData.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="9" style="text-align: center;">暂无数据</td></tr>';
+                return;
+            }
+
+            filteredData.forEach(item => {
+                const row = document.createElement('tr');
+                const formattedTime = new Date(item.updateTime).toLocaleString();
+
+
+                // 计算区间和log2值
+                const range = item.maxValue - item.minValue;
+                const log2Range = range > 0 ? Math.log2(range) : 0; // 避免log2(0)错误
+
+                // 难度评价逻辑（区分模式）
+                let difficultyComment;
+                // 从 level 字段解析出 minValue 和 maxValue
+                if (item.level && typeof item.level === 'string') {
+                    const levelParts = item.level.split('-');
+                    if (levelParts.length === 2) {
+                        const minValue = parseInt(levelParts[0]);
+                        const maxValue = parseInt(levelParts[1]);
+
+                        if (!isNaN(minValue) && !isNaN(maxValue)) {
+                            const range = maxValue - minValue;
+                            const log2Range = range > 0 ? Math.log2(range) : 0;
+
+                            // 使用 attempts 作为 maxAttempts 的近似值
+                            const maxAttempts = item.attempts || 10;
+
+                            if (item.gameType === '挑战模式') {
+                                if (maxAttempts > log2Range) {
+                                    difficultyComment = '就这';
+                                } else {
+                                    difficultyComment = '实力';
+                                }
+                            } else {
+                                if (log2Range <= 5) {
+                                    difficultyComment = '简单';
+                                } else if (log2Range <= 10) {
+                                    difficultyComment = '一般';
+                                } else if (log2Range <= 15) {
+                                    difficultyComment = '困难';
+                                } else if (log2Range <= 20) {
+                                    difficultyComment = '地狱';
+                                } else {
+                                    difficultyComment = '噩梦';
+                                }
+                            }
+                        }
+                    }
+                }
+                item.difficultyComment = difficultyComment
+                // 结果文本和样式（保持原有）
+                let resultText, resultClass;
+                switch(item.result) {
+                    case 'win': resultText = '胜利'; resultClass = 'success'; break;
+                    case 'lose': resultText = '失败'; resultClass = 'danger'; break;
+                    case 'giveup': resultText = '放弃'; resultClass = 'warning'; break;
+                    default: resultText = item.result; resultClass = '';
+                }
+
+
+                row.innerHTML = `
+                <td>${item.id}</td>
+                <td>${item.clientId}</td>
+                <td>${item.clientType}</td>
+                <td>${difficultyComment}</td> <!-- 难度评价 -->
+                <td><span class="result-badge ${resultClass}">${resultText}</span></td>
+                <td>${item.attempts}</td>
+                <td>${item.score}</td>
+                <td>${formattedTime}</td>
+                <td>
+                    <button class="action-btn view-btn" data-id="${item.id}">查看</button>
+                </td>
+            `;
+
+                tableBody.appendChild(row);
+            });
+
+            document.querySelectorAll('.view-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    showDetail(data.find(item => item.id == id));
+                });
+            });
+        }
+
+        // 统计
+        function updateStats(data) {
+            if (data.length === 0) {
+                document.getElementById('total-games').textContent = '0';
+                document.getElementById('total-users').textContent = '0';
+                document.getElementById('avg-score').textContent = '0';
+                return;
+            }
+
+            document.getElementById('total-games').textContent = data.length;
+            const uniqueUsers = new Set(data.map(item => item.clientId));
+            document.getElementById('total-users').textContent = uniqueUsers.size;
+
+            const totalScore = data.reduce((sum, item) => sum + item.score, 0);
+            document.getElementById('avg-score').textContent = Math.round(totalScore / data.length);
+        }
+
+        // 详情弹窗
+        function showDetail(item) {
+            const detailContent = document.getElementById('detail-content');
+
+            if (!item) {
+                detailContent.innerHTML = '<p>数据加载失败</p>';
+                document.getElementById('detail-modal').style.display = 'flex';
+                return;
+            }
+
+            console.log('=== 详情弹窗数据 ===');
+            console.log('完整数据:', JSON.stringify(item, null, 2));
+
+            const formattedTime = item.updateTime ? new Date(item.updateTime).toLocaleString() : '未知时间';
+
+            // 处理 currentHistory（可能是字符串或数组）
+            let historyDetails = '';
+            let currentHistory = item.currentHistory;
+
+            if (currentHistory) {
+                console.log('currentHistory 原始值:', currentHistory);
+                console.log('currentHistory 类型:', typeof currentHistory);
+
+                // 如果 currentHistory 是字符串，尝试解析为 JSON
+                if (currentHistory) {
+                    // 若为字符串则解析为JSON
+                    if (typeof currentHistory === 'string') {
+                        try {
+                            currentHistory = JSON.parse(currentHistory);
+                        } catch (e) {
+                            console.error('解析历史记录失败:', e);
+                            currentHistory = null;
+                        }
+                    }
+                }
+
+                // 如果是数组，构建历史记录
+                if (Array.isArray(currentHistory) && currentHistory.length > 0) {
+                    historyDetails = currentHistory.map((step, index) => {
+                        // 确保 step 是对象
+                        if (typeof step === 'object' && step !== null) {
+                            return `
+                        <div class="history-step">
+                            <span>${index + 1}. 猜测：${step.guess || '未知'} → ${
+                                step.result === 'correct' ? '正确' :
+                                    step.result === 'low' ? '偏小' :
+                                        step.result === 'high' ? '偏大' :
+                                            step.result === 'failed' ? '失败' : '未知'
+                            }</span>
+                        </div>
+                    `;
+                        } else {
+                            // 即使数组为空也明确显示，避免与"无历史记录"混淆
+                            historyDetails = '<p>无猜测记录</p>';
+                            return `<div class="history-step">记录格式错误</div>`;
+                        }
+                    }).join('');
+                }
+            }
+
+            detailContent.innerHTML = `
+            <div class="detail-item"><strong>游戏ID:</strong> ${item.id || '未知'}</div>
+            <div class="detail-item"><strong>客户端ID:</strong> ${item.clientId || '未知'}</div>
+            <div class="detail-item"><strong>客户端类型:</strong> ${item.clientType || '未知'}</div>
+            <div class="detail-item"><strong>游戏类型:</strong> ${item.gameType || '未知'}</div>
+            <div class="detail-item"><strong>难度评价:</strong> ${item.difficultyComment || '未知'}</div>
+            <div class="detail-item"><strong>猜测区间:</strong> ${item.level || '未知'}</div>
+            <div class="detail-item"><strong>正确答案:</strong> ${item.target || '未知'}</div>
+
+            <div class="detail-item">
+                <strong>游戏结果:</strong>
+                <span class="result-badge ${
+                    item.result === 'win' ? 'success' :
+                        item.result === 'lose' ? 'danger' :
+                            item.result === 'giveup' ? 'warning' : ''
+                }">
+                    ${item.result === 'win' ? '胜利' :
+                    item.result === 'lose' ? '失败' :
+                        item.result === 'giveup' ? '放弃' : '未知'}
+                </span>
+            </div>
+            <div class="detail-item"><strong>尝试次数:</strong> ${item.attempts || '0'}</div>
+            <div class="detail-item"><strong>得分:</strong> ${item.score || '0'}</div>
+            <div class="detail-item"><strong>游戏时间:</strong> ${formattedTime}</div>
+
+            <!-- 历史记录详情区域 -->
+            <div class="history-details-section">
+                <button id="show-history-btn" class="modal-btn">查看历史记录详情</button>
+                <div id="history-steps" class="history-steps" style="display:none; margin-top:10px; padding:10px; background:#f5f5f5; border-radius:4px;">
+                    <h4>猜测历史：</h4>
+                    ${historyDetails || '<p>无历史记录</p>'}
+                </div>
+            </div>
+            `;
+
+            // 绑定事件
+            const showHistoryBtn = document.getElementById('show-history-btn');
+            if (showHistoryBtn) {
+                // 先移除旧的事件监听器，再添加新的
+                showHistoryBtn.replaceWith(showHistoryBtn.cloneNode(true));
+                document.getElementById('show-history-btn').addEventListener('click', function() {
+                    const historySteps = document.getElementById('history-steps');
+                    if (historySteps) {
+                        historySteps.style.display = historySteps.style.display === 'none' ? 'block' : 'none';
+                    }
+                });
+            }
+
+            document.getElementById('detail-modal').style.display = 'flex';
+        }
+
+        // 编辑数据
+        window.editData = function(id, clientId, clientType) {
+            document.getElementById('editId').value = id;
+            document.getElementById('editClientId').value = clientId;
+            document.getElementById('editClientType').value = clientType;
+            document.getElementById('editForm').style.display = 'block';
+        };
+
+        window.cancelEdit = function() {
+            document.getElementById('editForm').style.display = 'none';
+        };
+
+        window.saveEdit = function() {
+            const data = {
+                id: document.getElementById('editId').value,
+                clientId: document.getElementById('editClientId').value,
+                clientType: document.getElementById('editClientType').value,
+                userCount: parseInt(document.getElementById('editUserCount').value),
+                score: parseInt(document.getElementById('editScore').value),
+                level: document.getElementById('editLevel').value
+            };
+
+            fetch('/admin/update', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            }).then(response => {
+                if (response.ok) {
+                    window.cancelEdit();
+                    refreshData();
+                }
+            });
+        };
+    });
+
+</script>
+</body>
+</html>

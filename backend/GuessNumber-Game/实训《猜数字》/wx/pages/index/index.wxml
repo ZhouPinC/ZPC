@@ -1,0 +1,170 @@
+<!-- 未开始界面 -->
+<view class="container" wx:if="{{gameState === 'NOT_STARTED'}}">
+  <view class="title">猜数字 · 小游戏</view>
+  
+  <view class="button-group">
+    <button bindtap="startGame" class="big-btn start-btn">开 始 游 戏</button>
+    <button bindtap="openSettings" class="big-btn setting-btn">游 戏 设 置</button>
+  </view>
+  
+  <view class="footer">版本 1.0</view>
+</view>
+
+<!-- 游戏进行中界面 -->
+<view class="container" wx:elif="{{gameState === 'RUNNING' || gameState === 'PAUSED' || gameState === 'ENDED'}}">
+  <!-- 顶部信息 -->
+  <view class="game-header">
+    <view class="game-mode">
+      当前模式：{{settings.challengeMode ? '挑战模式' : '猜数字模式'}}
+    </view>
+    <view class="game-range">
+      区间：{{settings.minValue}} ～ {{settings.maxValue}}
+      <text wx:if="{{settings.challengeMode}}">（剩余 {{remainingAttempts}} 次）</text>
+    </view>
+  </view>
+  
+  <!-- 游戏区域 -->
+  <view class="game-area">
+    <view class="input-section">
+      <view class="input-label">请输入你的数字：</view>
+      <input 
+        type="number" 
+        placeholder="输入数字" 
+        value="{{userInput}}" 
+        bindinput="onInputChange"
+        disabled="{{gameState !== 'RUNNING'}}"
+        class="number-input"
+      />
+      
+      <view class="button-group-game">
+        <button 
+          bindtap="submitGuess" 
+          class="game-btn submit-btn"
+          disabled="{{!userInput || gameState !== 'RUNNING'}}"
+        >
+          提交
+        </button>
+        <button 
+          bindtap="giveUp" 
+          class="game-btn giveup-btn"
+          disabled="{{gameState !== 'RUNNING' && gameState !== 'PAUSED'}}"
+        >
+          放弃
+        </button>
+        <button 
+          bindtap="{{gameState === 'PAUSED' ? 'resumeGame' : 'pauseGame'}}" 
+          class="game-btn pause-btn"
+          disabled="{{gameState === 'ENDED'}}"
+        >
+          {{gameState === 'PAUSED' ? '继续' : '暂停'}}
+        </button>
+      </view>
+    </view>
+    
+    <view class="history-section">
+      <view class="history-title">历史记录</view>
+      <scroll-view class="history-list" scroll-y="true">
+        <view class="history-item" wx:for="{{guessHistory}}" wx:key="index">
+          <text class="history-num">{{index + 1}}. {{item.number}}</text>
+          <text class="history-result {{item.result === '正确' ? 'correct' : (item.result === '偏大' ? 'high' : 'low')}}">
+            → {{item.result}}
+          </text>
+        </view>
+      </scroll-view>
+    </view>
+  </view>
+  
+  <!-- 底部状态栏 -->
+  <view class="game-status">
+    状态：{{statusText}} | 已猜 {{attempts}} 次
+  </view>
+</view>
+
+<!-- 设置弹窗 -->
+<view class="modal-mask" wx:if="{{showSettingsModal}}" bindtap="closeSettings"></view>
+<view class="modal-dialog" wx:if="{{showSettingsModal}}">
+  <view class="modal-title">游戏设置</view>
+  <view class="modal-content">
+    <view class="setting-item">
+      <text class="setting-label">数值区间：</text>
+      <view class="range-inputs">
+        <input 
+          type="number" 
+          placeholder="最小值" 
+          value="{{tempSettings.minValue}}" 
+          bindinput="onMinChange"
+          class="range-input"
+        />
+        <text class="range-separator">至</text>
+        <input 
+          type="number" 
+          placeholder="最大值" 
+          value="{{tempSettings.maxValue}}" 
+          bindinput="onMaxChange"
+          class="range-input"
+        />
+      </view>
+    </view>
+    
+    <view class="setting-item">
+      <text class="setting-label">游戏模式：</text>
+      <view class="mode-options">
+        <label class="radio-label">
+          <radio value="normal" checked="{{!tempSettings.challengeMode}}" bindchange="onModeChange" />
+          <text>猜数字模式</text>
+        </label>
+        <label class="radio-label">
+          <radio value="challenge" checked="{{tempSettings.challengeMode}}" bindchange="onModeChange" />
+          <text>挑战模式</text>
+        </label>
+      </view>
+    </view>
+    
+    <view class="setting-item" wx:if="{{tempSettings.challengeMode}}">
+      <text class="setting-label">限定次数：</text>
+      <input 
+        type="number" 
+        min="1" 
+        value="{{tempSettings.maxAttempts}}" 
+        bindinput="onMaxAttemptsChange"
+        class="attempts-input"
+      />
+    </view>
+  </view>
+  <view class="modal-footer">
+    <button bindtap="cancelSettings" class="modal-btn cancel-btn">取消</button>
+    <button bindtap="saveSettings" class="modal-btn confirm-btn">保存</button>
+  </view>
+</view>
+
+<!-- 游戏结束弹窗 -->
+<view class="modal-mask" wx:if="{{showResultModal}}" bindtap="closeResult"></view>
+<view class="modal-dialog" wx:if="{{showResultModal}}">
+  <view class="modal-title">{{resultTitle}}</view>
+  <view class="modal-content">
+    <view class="result-message">{{resultMessage}}</view>
+    <view class="result-details" wx:if="{{gameResult.target}}">
+      正确答案：<text class="target-number">{{gameResult.target}}</text>
+    </view>
+  </view>
+  <view class="modal-footer">
+    <a bindtap="backToStart" class="modal-btn confirm-btn">返回开始</a>
+    <a bindtap="playAgain" class="modal-btn cancel-btn">再来一局</a>
+  </view>
+</view>
+
+<!-- 暂停弹窗 -->
+<view class="modal-mask" wx:if="{{gameState === 'PAUSED'}}" bindtap="resumeGame"></view>
+<view class="modal-dialog" wx:if="{{gameState === 'PAUSED'}}">
+  <view class="modal-title">游戏已暂停</view>
+  <view class="modal-content">
+    <view class="pause-info">当前模式：{{settings.challengeMode ? '挑战模式' : '猜数字模式'}}</view>
+    <view class="pause-info">已猜次数：{{attempts}}</view>
+    <view class="pause-info" wx:if="{{settings.challengeMode}}">
+      剩余次数：{{remainingAttempts}}
+    </view>
+  </view>
+  <view class="modal-footer">
+    <a bindtap="resumeGame" class="modal-btn confirm-btn">继续游戏</a>
+  </view>
+</view>

@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>猜数字小游戏</title>
+    <link rel="stylesheet" href="/css/game.css"> <!-- 保持引用style.css，不使用game.css -->
+</head>
+<body>
+<div class="container">
+    <!-- 未开始界面 -->
+    <div id="start-panel" class="panel active">
+        <h1 class="game-title">猜数字 · 游园</h1>
+
+
+        <button id="toAdmin">进入后台管理</button>
+
+
+        <div class="button-group">
+            <button id="start-btn" class="big-btn">开始游戏</button>
+            <button id="settings-btn" class="big-btn">游戏设置</button>
+            <button id="history-btn" class="big-btn">历史记录</button>
+            <button id="exit-btn" class="big-btn">退出游戏</button>
+        </div>
+        <p class="version">版本 1.0</p>
+    </div>
+
+
+    <!-- 游戏界面 -->
+    <div id="game-panel" class="panel">
+        <div class="game-header">
+            <h2 id="game-mode-info">当前模式：猜数字模式</h2>
+            <p id="range-info">区间：0 ～ 100</p>
+        </div>
+
+
+        <div class="game-body">
+            <div class="game-controls">
+                <div class="input-section">
+                    <label for="guess-input">请输入你的数字：</label>
+                    <input type="text" id="guess-input" placeholder="输入整数">
+                </div>
+                <div class="button-section">
+                    <button id="submit-btn" class="game-btn">提交</button>
+                    <button id="give-up-btn" class="game-btn">放弃</button>
+                    <button id="pause-btn" class="game-btn">暂停</button>
+                    <button id="back-btn" class="game-btn">返回</button>
+                </div>
+            </div>
+
+            <div class="history-section">
+                <h3>历史记录</h3>
+                <div id="guess-history" class="history-content">
+                    <!-- 历史记录将在这里动态添加 -->
+                </div>
+            </div>
+        </div>
+
+        <div class="game-footer">
+            <p id="status-info">状态：准备就绪</p>
+        </div>
+    </div>
+
+    <!-- 历史记录界面 -->
+    <div id="history-panel" class="panel">
+        <h2>游戏历史记录</h2>
+        <div id="all-history" class="history-list">
+            <!-- 所有历史记录将在这里动态添加 -->
+            <p class="empty-history">暂无历史记录</p>
+        </div>
+        <button id="back-from-history" class="back-btn">返回</button>
+    </div>
+
+    <!-- 设置弹窗 -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <h2>游戏设置</h2>
+            <div class="settings-group">
+                <label>数值区间：</label>
+                <div class="range-inputs">
+                    <input type="number" id="min-value" placeholder="最小值">
+                    <span>至</span>
+                    <input type="number" id="max-value" placeholder="最大值">
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <label>游戏模式：</label>
+                <div class="mode-options">
+                    <label>
+                        <input type="radio" name="game-mode" value="guess" checked> 猜数字模式
+                    </label>
+                    <label>
+                        <input type="radio" name="game-mode" value="challenge"> 挑战模式
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-group" id="attempts-setting">
+                <label for="max-attempts">限定次数：</label>
+                <input type="number" id="max-attempts" min="1" value="10">
+            </div>
+
+            <div class="settings-group">
+                <label>视觉设置：</label>
+                <div class="visual-settings">
+                    <div>
+                        <label for="font-size">字体大小：</label>
+                        <input type="number" id="font-size" min="12" max="24" value="16">
+                    </div>
+                    <div>
+                        <label for="font-color">字体颜色：</label>
+                        <input type="color" id="font-color" value="#333333">
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-buttons">
+                <button id="save-settings" class="modal-btn">保存</button>
+                <button id="cancel-settings" class="modal-btn">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 暂停弹窗 -->
+    <div id="pause-modal" class="modal">
+        <div class="modal-content">
+            <h2>游戏已暂停</h2>
+            <p id="pause-info">当前模式：猜数字模式</p>
+            <p id="pause-stats">已猜次数：0</p>
+            <button id="resume-btn" class="modal-btn">继续游戏</button>
+        </div>
+    </div>
+
+    <!-- 结果弹窗 -->
+    <div id="result-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="result-title">恭喜你！</h2>
+            <p id="result-message">你猜对了！</p>
+            <div class="modal-buttons">
+                <button id="play-again-btn" class="modal-btn">再玩一次</button>
+                <button id="back-to-start-btn" class="modal-btn">返回首页</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>// 连接 WebSocket
+let socket = new WebSocket('ws://' + window.location.host + '/gameSync');
+
+// 发送游戏数据（模拟）
+function sendGameData() {
+    const data = {
+        clientId: 'web_' + Math.random().toString(36).substr(2, 9),
+        clientType: 'web',
+        userCount: Math.floor(Math.random() * 100),
+        score: Math.floor(Math.random() * 1000),
+        level: Math.floor(Math.random() * 10) + 1
+    };
+    socket.send(JSON.stringify(data));
+}
+
+// 接收实时数据
+socket.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    document.getElementById('userCount').textContent = data.userCount;
+    document.getElementById('score').textContent = data.score;
+    document.getElementById('level').textContent = data.level;
+};
+
+
+// 跳转到后台管理（需要登录）
+document.getElementById('toAdmin').addEventListener('click', function() {
+    window.location.href = '/admin';
+});
+
+// 游戏状态枚举
+const GameState = {
+    NOT_STARTED: 'not_started',
+    RUNNING: 'running',
+    PAUSED: 'paused',
+    ENDED: 'ended'
+};
+
+// 游戏模式枚举
+const GameMode = {
+    GUESS: 'guess',
+    CHALLENGE: 'challenge'
+};
+
+// 游戏配置
+const settings = {
+    minValue: 0,
+    maxValue: 100,
+    mode: GameMode.GUESS,
+    maxAttempts: 10,
+    fontSize: 16,
+    fontColor: '#333333',
+    difficulty: '简单' // 新增难度属性
+};
+
+
+// 难度等级枚举（新增挑战模式专属评价）
+const Difficulty = {
+    // 普通模式（猜数字模式）难度
+    EASY: '简单',
+    NORMAL: '一般',
+    HARD: '困难',
+    HELL: '地狱',
+    NIGHTMARE: '噩梦',
+    // 挑战模式难度
+    JUST_THIS: '就这', // 设定次数 > log2n（太简单）
+    STRENGTH: '实力'  // 设定次数 < log2n（有挑战性）
+};
+
+// 计算区间的 log2n（折中查找最优次数，向上取整）
+function calculateLog2n(min, max) {
+    const range = max - min + 1; // 包含两端，如0-100是101个数
+    return Math.ceil(Math.log2(range)); // 向上取整，确保最优次数覆盖所有情况
+}
+
+
+// 统一难度计算函数（区分普通/挑战模式）
+function calculateDifficulty(mode, min, max, maxAttempts) {
+    const log2n = calculateLog2n(min, max);
+
+    // 普通模式（猜数字模式）：按 log2n 分难度
+    if (mode === GameMode.GUESS) {
+        if (log2n <= 5) return Difficulty.EASY;
+        if (log2n <= 10) return Difficulty.NORMAL;
+        if (log2n <= 15) return Difficulty.HARD;
+        if (log2n <= 20) return Difficulty.HELL;
+        return Difficulty.NIGHTMARE;
+    }
+
+    // 挑战模式：按设定次数与 log2n 比较分难度
+    if (mode === GameMode.CHALLENGE) {
+        if (maxAttempts > log2n) return Difficulty.JUST_THIS; // 设定次数多，太简单
+        if (maxAttempts < log2n) return Difficulty.STRENGTH; // 设定次数少，有难度
+        return Difficulty.NORMAL; // 相等时算一般
+    }
+
+    return Difficulty.EASY;
+}
+
+
+
+
+// 游戏状态
+let gameState = GameState.NOT_STARTED;
+let targetNumber = null;
+let attempts = 0;
+let currentHistory = [];
+let gameHistory = JSON.parse(localStorage.getItem('guessNumberHistory') || '[]');
+
+// DOM 元素
+const panels = {
+    start: document.getElementById('start-panel'),
+    game: document.getElementById('game-panel'),
+    history: document.getElementById('history-panel')
+};
+
+const modals = {
+    settings: document.getElementById('settings-modal'),
+    pause: document.getElementById('pause-modal'),
+    result: document.getElementById('result-modal')
+};
+
+const buttons = {
+    start: document.getElementById('start-btn'),
+    settings: document.getElementById('settings-btn'),
+    history: document.getElementById('history-btn'),
+    exit: document.getElementById('exit-btn'),
+    submit: document.getElementById('submit-btn'),
+    giveUp: document.getElementById('give-up-btn'),
+    pause: document.getElementById('pause-btn'),
+    back: document.getElementById('back-btn'),
+    backFromHistory: document.getElementById('back-from-history'),
+    saveSettings: document.getElementById('save-settings'),
+    cancelSettings: document.getElementById('cancel-settings'),
+    resume: document.getElementById('resume-btn'),
+    playAgain: document.getElementById('play-again-btn'),
+    backToStart: document.getElementById('back-to-start-btn')
+};
+
+const inputs = {
+    guess: document.getElementById('guess-input'),
+    minValue: document.getElementById('min-value'),
+    maxValue: document.getElementById('max-value'),
+    maxAttempts: document.getElementById('max-attempts'),
+    fontSize: document.getElementById('font-size'),
+    fontColor: document.getElementById('font-color'),
+    gameMode: document.querySelectorAll('input[name="game-mode"]')
+};
+
+const displays = {
+    gameModeInfo: document.getElementById('game-mode-info'),
+    rangeInfo: document.getElementById('range-info'),
+    statusInfo: document.getElementById('status-info'),
+    guessHistory: document.getElementById('guess-history'),
+    allHistory: document.getElementById('all-history'),
+    pauseInfo: document.getElementById('pause-info'),
+    pauseStats: document.getElementById('pause-stats'),
+    resultTitle: document.getElementById('result-title'),
+    resultMessage: document.getElementById('result-message')
+};
+
+// 初始化
+function init() {
+    loadSettings();
+    updateSettingsForm();
+    setupEventListeners();
+    updateHistoryDisplay();
+}
+
+// 加载保存的设置
+function loadSettings() {
+    const savedSettings = localStorage.getItem('guessNumberSettings');
+    if (savedSettings) {
+        Object.assign(settings, JSON.parse(savedSettings));
+        applyVisualSettings();
+    }
+}
+
+// 保存设置
+function saveSettings() {
+    localStorage.setItem('guessNumberSettings', JSON.stringify(settings));
+}
+
+// 更新设置表单
+function updateSettingsForm() {
+    inputs.minValue.value = settings.minValue;
+    inputs.maxValue.value = settings.maxValue;
+    inputs.maxAttempts.value = settings.maxAttempts;
+    inputs.fontSize.value = settings.fontSize;
+    inputs.fontColor.value = settings.fontColor;
+
+    inputs.gameMode.forEach(radio => {
+        radio.checked = radio.value === settings.mode;
+    });
+
+    // 根据游戏模式显示/隐藏尝试次数设置
+    document.getElementById('attempts-setting').style.display =
+        settings.mode === GameMode.CHALLENGE ? 'block' : 'none';
+}
+
+// 应用视觉设置
+function applyVisualSettings() {
+    document.body.style.fontSize = `${settings.fontSize}px`;
+    document.body.style.color = settings.fontColor;
+}
+
+// 设置事件监听器
+function setupEventListeners() {
+    // 开始界面按钮
+    buttons.start.addEventListener('click', startGame);
+    buttons.settings.addEventListener('click', () => modals.settings.style.display = 'flex');
+    buttons.history.addEventListener('click', showHistoryPanel);
+    buttons.exit.addEventListener('click', () => {
+        if (confirm('确认退出游戏吗？')) {
+            window.close();
+        }
+    });
+
+    // 游戏界面按钮
+    buttons.submit.addEventListener('click', submitGuess);
+    buttons.giveUp.addEventListener('click', giveUp);
+    buttons.pause.addEventListener('click', pauseGame);
+    buttons.back.addEventListener('click', backToStart);
+
+    // 历史记录界面按钮
+    buttons.backFromHistory.addEventListener('click', showStartPanel);
+
+    // 设置弹窗按钮
+    buttons.saveSettings.addEventListener('click', saveSettingsHandler);
+    buttons.cancelSettings.addEventListener('click', () => modals.settings.style.display = 'none');
+
+    // 暂停弹窗按钮
+    buttons.resume.addEventListener('click', resumeGame);
+
+    // 结果弹窗按钮
+    buttons.playAgain.addEventListener('click', startGame);
+    buttons.backToStart.addEventListener('click', backToStart);
+
+    // 输入框事件
+    inputs.guess.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            submitGuess();
+        }
+    });
+
+    // 游戏模式切换
+    inputs.gameMode.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            document.getElementById('attempts-setting').style.display =
+                e.target.value === GameMode.CHALLENGE ? 'block' : 'none';
+        });
+    });
+}
+
+// 显示指定面板
+function showPanel(panelName) {
+    Object.keys(panels).forEach(key => {
+        panels[key].classList.remove('active');
+    });
+    panels[panelName].classList.add('active');
+}
+
+// 显示开始面板
+function showStartPanel() {
+    showPanel('start');
+}
+
+// 显示游戏面板
+function showGamePanel() {
+    showPanel('game');
+    updateGameInfo();
+}
+
+// 显示历史记录面板
+function showHistoryPanel() {
+    showPanel('history');
+    updateHistoryDisplay();
+}
+
+// 开始新游戏
+function startGame() {
+    targetNumber = Math.floor(Math.random() * (settings.maxValue - settings.minValue + 1)) + settings.minValue;
+    attempts = 0;
+    currentHistory = [];
+    gameState = GameState.RUNNING;
+
+    modals.pause.style.display = 'none';
+    modals.result.style.display = 'none';
+
+    displays.guessHistory.innerHTML = '';
+    inputs.guess.value = '';
+    inputs.guess.focus();
+
+    showGamePanel();
+    updateStatus();
+}
+
+// 提交猜测
+function submitGuess() {
+    if (gameState !== GameState.RUNNING) return;
+
+    const guessStr = inputs.guess.value.trim();
+    if (!guessStr) return;
+
+    const guess = parseInt(guessStr, 10);
+
+    // 验证输入
+    if (isNaN(guess) || guess < settings.minValue || guess > settings.maxValue) {
+        alert(`请输入${settings.minValue}到${settings.maxValue}之间的整数`);
+        return;
+    }
+
+    attempts++;
+
+    // 记录猜测
+    let result;
+    if (guess === targetNumber) {
+        result = 'correct';
+        gameState = GameState.ENDED;
+        saveGameResult(true);
+        showResultModal(true);
+    } else if (guess < targetNumber) {
+        result = 'low';
+    } else {
+        result = 'high';
+    }
+
+    // 先添加历史记录，再检查是否失败
+    const historyItem = {
+        guess,
+        result,
+        time: new Date().toLocaleTimeString()
+    };
+    currentHistory.push(historyItem);
+    addHistoryItem(historyItem);
+
+    // 检查挑战模式是否失败（移到记录历史之后）
+    if (settings.mode === GameMode.CHALLENGE && attempts >= settings.maxAttempts && result !== 'correct') {
+        result = 'failed';
+        gameState = GameState.ENDED;
+    }
+
+    // 保存游戏结果
+    if (gameState === GameState.ENDED) {
+        saveGameResult(result === 'correct');
+        showResultModal(result === 'correct');
+    }
+
+
+    // 清空输入框
+    inputs.guess.value = '';
+    inputs.guess.focus();
+
+    // 更新状态
+    updateStatus();
+}
+
+// 放弃游戏
+function giveUp() {
+    if (gameState !== GameState.RUNNING) return;
+
+    gameState = GameState.ENDED;
+    saveGameResult(false, true);
+    showResultModal(false, true);
+}
+
+// 暂停游戏
+function pauseGame() {
+    if (gameState !== GameState.RUNNING) return;
+
+    gameState = GameState.PAUSED;
+    displays.pauseInfo.textContent = `当前模式：${settings.mode === GameMode.GUESS ? '猜数字模式' : '挑战模式'}`;
+    displays.pauseStats.textContent = `已猜次数：${attempts}`;
+    modals.pause.style.display = 'flex';
+}
+
+// 恢复游戏
+function resumeGame() {
+    gameState = GameState.RUNNING;
+    modals.pause.style.display = 'none';
+    inputs.guess.focus();
+}
+
+// 返回开始界面
+function backToStart() {
+    if (gameState === GameState.RUNNING) {
+        if (!confirm('当前游戏正在进行中，确定要返回首页吗？')) {
+            return;
+        }
+    }
+
+    gameState = GameState.NOT_STARTED;
+    modals.pause.style.display = 'none';
+    modals.result.style.display = 'none';
+    showStartPanel();
+}
+
+
+// 获取或生成客户端ID
+function getClientId() {
+    let clientId = localStorage.getItem('guessNumberClientId');
+    if (!clientId) {
+        clientId = 'web_user_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('guessNumberClientId', clientId);
+    }
+    return clientId;
+}
+
+
+
+// 保存游戏结果
+function saveGameResult(success, gaveUp = false) {
+    // const result = {
+    //     date: new Date().toLocaleString(),
+    //     mode: settings.mode === GameMode.GUESS ? '猜数字模式' : '挑战模式',
+    //     range: `${settings.minValue} - ${settings.maxValue}`,
+    //     target: targetNumber,
+    //     attempts,
+    //     success,
+    //     gaveUp
+    // };
+    //
+    // gameHistory.unshift(result);
+    // localStorage.setItem('guessNumberHistory', JSON.stringify(gameHistory));
+
+    // 前端生成标准时间格式（不含时区，yyyy-MM-dd HH:mm:ss）
+    function formatUpdateTime() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0'); // 月份从0开始，补0
+        const day = String(now.getDate()).padStart(2, '0'); // 日期补0
+        const hours = String(now.getHours()).padStart(2, '0'); // 小时补0
+        const minutes = String(now.getMinutes()).padStart(2, '0'); // 分钟补0
+        const seconds = String(now.getSeconds()).padStart(2, '0'); // 秒补0
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    }
+
+
+
+
+    const result = {
+        date: new Date().toLocaleString(),
+
+        clientId: getClientId(),
+        clientType: 'web',
+        gameType: settings.mode === GameMode.GUESS ? '猜数字模式' : '挑战模式',
+        level: `${settings.minValue}-${settings.maxValue}`,
+        result: success ? 'win' : gaveUp ? 'giveup' : 'lose',
+        attempts: attempts,
+        score: calculateScore(success, attempts),
+        target: targetNumber,
+        updateTime: formatUpdateTime(),
+        userCount: 1,
+        currentHistory: JSON.stringify(currentHistory)
+    };
+
+
+    console.log('发送到后端的数据:', result);
+
+
+
+    // 发送到服务器（关键修复）
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.send(JSON.stringify(result));
+    }
+
+
+    // 本地存储
+    const localResult = {
+        ...result,
+        date: new Date().toLocaleString(),
+        id: Date.now() // 为本地记录生成ID
+    };
+
+
+    gameHistory.unshift(result);
+    localStorage.setItem('guessNumberHistory', JSON.stringify(gameHistory));
+
+    // const result = {
+    //     date: new Date().toLocaleString(),
+    //     //updateTime: new Date().toISOString(), // 新增标准时间格式用于排序
+    //     mode: settings.mode === GameMode.GUESS ? '猜数字模式' : '挑战模式',
+    //     gameType: settings.mode === GameMode.GUESS ? '猜数字模式' : '挑战模式', // 明确游戏类型
+    //     range: `${settings.minValue} - ${settings.maxValue}`,
+    //     target: targetNumber, // 保存正确答案
+    //     attempts: attempts, // 记录实际尝试次数
+    //     success: success,
+    //     gaveUp: gaveUp,
+    //     result: success ? 'win' : gaveUp ? 'giveUp' : 'lose', // 标准化结果状态
+    //     score: calculateScore(success, attempts), // 新增得分计算
+    //     clientId: clientId, // 关联客户端ID
+    //     //clientType: 'web', // 客户端类型
+    //     currentHistory: currentHistory // 保存当次游戏的猜测历史
+    // };
+
+    // gameHistory.unshift(result); // 前端本地记录也保持最新在前
+    // localStorage.setItem('guessNumberHistory', JSON.stringify(gameHistory));
+
+    // 发送到后端时也确保数据完整（如果有后端接口）
+    // sendGameResultToServer(result);
+}
+
+// 修改得分计算函数，根据难度调整
+function calculateScore(success, attempts) {
+    if (!success) return 0;
+
+    // 根据不同难度计算分数
+    switch(settings.difficulty) {
+        case '简单':
+            // 简单：基础分100分，每多一次尝试减3分，最低10分
+            return Math.max(100 - (attempts * 3), 10);
+        case '一般':
+            // 一般：基础分200分，每多一次尝试减5分，最低20分
+            return Math.max(200 - (attempts * 5), 20);
+        case '困难':
+            // 困难：基础分300分，每多一次尝试减7分，最低30分
+            return Math.max(300 - (attempts * 7), 30);
+        case '地狱':
+            // 地狱：基础分500分，每多一次尝试减10分，最低50分
+            return Math.max(500 - (attempts * 10), 50);
+        case '噩梦':
+            // 噩梦：基础分1000分，每多一次尝试减15分，最低100分
+            return Math.max(1000 - (attempts * 15), 100);
+        default:
+            return Math.max(100 - (attempts * 5), 10);
+    }
+}
+
+// 显示结果弹窗
+function showResultModal(success, gaveUp = false) {
+    const score = calculateScore(success, attempts);
+
+    if (success) {
+        displays.resultTitle.textContent = '恭喜你！';
+        displays.resultMessage.textContent = `你猜对了！答案就是 ${targetNumber}，共用了 ${attempts} 次尝试。得分：${score}`;
+    } else if (gaveUp) {
+        displays.resultTitle.textContent = '游戏结束';
+        displays.resultMessage.textContent = `你放弃了游戏。正确答案是 ${targetNumber}。得分：${score}`;
+    } else {
+        displays.resultTitle.textContent = '挑战失败';
+        displays.resultMessage.textContent = `很遗憾，你没有猜对。正确答案是 ${targetNumber}。得分：${score}`;
+    }
+
+    modals.result.style.display = 'flex';
+}
+
+// 添加历史记录项
+function addHistoryItem(item) {
+    const div = document.createElement('div');
+    div.className = `history-item ${item.result}`;
+
+    let resultText;
+    switch (item.result) {
+        case 'correct':
+            resultText = '正确！';
+            break;
+        case 'low':
+            resultText = '偏小';
+            break;
+        case 'high':
+            resultText = '偏大';
+            break;
+        case 'failed':
+            resultText = '失败';
+            break;
+    }
+
+    div.innerHTML = `
+      <strong>${item.time}</strong> - 你猜的是 ${item.guess}，${resultText}
+      ${settings.mode === GameMode.CHALLENGE ? `<br>已猜 ${attempts}/${settings.maxAttempts} 次` : ''}
+  `;
+
+    displays.guessHistory.appendChild(div);
+    displays.guessHistory.scrollTop = displays.guessHistory.scrollHeight;
+}
+
+// 更新游戏信息显示
+function updateGameInfo() {
+    const modeText = settings.mode === GameMode.GUESS ? '猜数字模式' : '挑战模式';
+    let difficultyText = '';
+
+    // 仅在猜数字模式下显示难度
+    if (settings.mode === GameMode.GUESS) {
+        difficultyText = `，难度：${settings.difficulty}`;
+    }
+
+    displays.gameModeInfo.textContent = `当前模式：${modeText}${difficultyText}`;
+    displays.rangeInfo.textContent = `区间：${settings.minValue} ～ ${settings.maxValue}${
+        settings.mode === GameMode.CHALLENGE ? `（剩余 ${settings.maxAttempts} 次）` : ''
+    }`;
+}
+
+// 更新状态信息
+function updateStatus() {
+    if (gameState === GameState.RUNNING) {
+        displays.statusInfo.textContent = `状态：已猜 ${attempts} 次${
+            settings.mode === GameMode.CHALLENGE ? `，剩余 ${settings.maxAttempts - attempts} 次` : ''
+        }`;
+    } else if (gameState === GameState.PAUSED) {
+        displays.statusInfo.textContent = '状态：游戏已暂停';
+    } else if (gameState === GameState.ENDED) {
+        displays.statusInfo.textContent = '状态：游戏已结束';
+    }
+}
+
+// 更新历史记录显示
+function updateHistoryDisplay() {
+    if (gameHistory.length === 0) {
+        displays.allHistory.innerHTML = '<p class="empty-history">暂无历史记录</p>';
+        return;
+    }
+
+    displays.allHistory.innerHTML = '';
+
+    gameHistory.forEach((record, index) => {
+        const div = document.createElement('div');
+        div.className = 'game-record';
+
+        div.innerHTML = `
+          <p><strong>游戏 ${index + 1}：${record.date}</strong></p>
+          <p>模式：${record.mode}，区间：${record.range}</p>
+          <p>答案：${record.target}，尝试次数：${record.attempts}</p>
+          <p>结果：${record.success ? '成功' : record.gaveUp ? '放弃' : '失败'}</p>
+      `;
+
+        displays.allHistory.appendChild(div);
+    });
+}
+
+// 保存设置处理函数
+function saveSettingsHandler() {
+    const min = parseInt(inputs.minValue.value, 10);
+    const max = parseInt(inputs.maxValue.value, 10);
+    const attempts = parseInt(inputs.maxAttempts.value, 10);
+    const fontSize = parseInt(inputs.fontSize.value, 10);
+    const fontColor = inputs.fontColor.value;
+    const mode = document.querySelector('input[name="game-mode"]:checked').value;
+
+    // 验证区间设置
+    if (isNaN(min) || isNaN(max) || min >= max || max - min < 10) {
+        alert('请输入有效的数值区间，要求最大值大于最小值且区间长度至少为10');
+        return;
+    }
+
+    // 验证尝试次数
+    if (mode === GameMode.CHALLENGE && (isNaN(attempts) || attempts < 1)) {
+        alert('请输入有效的限定次数，至少为1');
+        return;
+    }
+
+    // 验证字体大小
+    if (isNaN(fontSize) || fontSize < 12 || fontSize > 24) {
+        alert('请输入有效的字体大小，范围12-24');
+        return;
+    }
+
+
+    // 计算当前模式的难度评价（核心修改）
+    const difficulty = calculateDifficulty(mode, min, max, attempts);
+
+
+    // 保存设置
+    settings.minValue = min;
+    settings.maxValue = max;
+    settings.mode = mode;
+    settings.maxAttempts = attempts;
+    settings.fontSize = fontSize;
+    settings.fontColor = fontColor;
+    settings.difficulty = difficulty; // 保存难度设置
+
+    saveSettings();
+    applyVisualSettings();
+
+    modals.settings.style.display = 'none';
+    alert(`设置已保存，难度级别：${difficulty}`);
+}
+
+// 初始化游戏
+document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>

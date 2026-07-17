@@ -1,0 +1,124 @@
+.container {
+  min-height: 100vh;
+  background-color: #f5f5f0;
+  padding: 20rpx;
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  padding: 20rpx 0;
+  border-bottom: 2rpx solid #eee;
+  margin-bottom: 20rpx;
+  font-family: "Microsoft YaHei", sans-serif;
+}
+
+.history-list {
+  min-height: 90vh;
+  display: flex;
+  width: 80%;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.history-item {
+  background-color: white;
+  border-radius: 15rpx;
+  padding: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15rpx;
+}
+
+.history-date {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.history-status {
+  font-size: 28rpx;
+  font-weight: bold;
+  padding: 5rpx 15rpx;
+  border-radius: 20rpx;
+}
+
+.win {
+  color: #4cae50;
+  background-color: #f1f8e9;
+}
+
+.lose {
+  color: #f44336;
+  background-color: #ffebee;
+}
+
+.giveup {
+  color: #ff9800;
+  background-color: #fff8e1;
+}
+
+.history-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.detail-item {
+  font-size: 26rpx;
+  color: #555;
+}
+
+.empty-state {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  align-items: center;
+  justify-content: center;
+  min-height: 90vh;
+  gap: 30rpx;
+}
+
+
+.empty-icon {
+  font-size: 100rpx;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #999;
+}
+
+.start-game-btn {
+  width: 60%;
+  height: 80rpx;
+  line-height: 80rpx;
+  font-size: 30rpx;
+  background-color: #2196f3;
+  color: white;
+  border-radius: 40rpx;
+  border: none;
+  margin-top: 20rpx;
+}
+
+.clear-btn {
+  position: fixed;
+  bottom: 30rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 80rpx;
+  line-height: 80rpx;
+  font-size: 30rpx;
+  background-color: #f5f5f5;
+  color: #666;
+  border-radius: 40rpx;
+  border: 2rpx solid #ddd;
+}

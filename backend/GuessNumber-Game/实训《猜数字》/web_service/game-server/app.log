@@ -1,0 +1,515 @@
+nohup: ignoring input
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v3.2.0)
+
+2025-11-24T07:20:36.665-05:00  INFO 4205 --- [           main] com.game.GameServerApplication           : Starting GameServerApplication v0.0.1-SNAPSHOT using Java 17.0.17 with PID 4205 (/home/ubuntu/GuessNumberGame/实训《猜数字》/web_service/game-server/target/game-server-0.0.1-SNAPSHOT.jar started by ubuntu in /home/ubuntu/GuessNumberGame/实训《猜数字》/web_service/game-server)
+2025-11-24T07:20:36.668-05:00 DEBUG 4205 --- [           main] com.game.GameServerApplication           : Running with Spring Boot v3.2.0, Spring v6.1.1
+2025-11-24T07:20:36.669-05:00  INFO 4205 --- [           main] com.game.GameServerApplication           : No active profile set, falling back to 1 default profile: "default"
+2025-11-24T07:20:37.597-05:00  INFO 4205 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-11-24T07:20:37.665-05:00  INFO 4205 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 59 ms. Found 1 JPA repository interface.
+2025-11-24T07:20:38.256-05:00  INFO 4205 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port 8080 (http)
+2025-11-24T07:20:38.267-05:00  INFO 4205 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2025-11-24T07:20:38.268-05:00  INFO 4205 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/10.1.16]
+2025-11-24T07:20:38.321-05:00  INFO 4205 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2025-11-24T07:20:38.322-05:00  INFO 4205 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1575 ms
+2025-11-24T07:20:38.510-05:00  INFO 4205 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-11-24T07:20:38.574-05:00  INFO 4205 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.3.1.Final
+2025-11-24T07:20:38.615-05:00  INFO 4205 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2025-11-24T07:20:38.879-05:00  INFO 4205 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-11-24T07:20:38.909-05:00  INFO 4205 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2025-11-24T07:20:39.112-05:00  INFO 4205 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1e734eee
+2025-11-24T07:20:39.115-05:00  INFO 4205 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2025-11-24T07:20:39.160-05:00  WARN 4205 --- [           main] org.hibernate.orm.deprecation            : HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-11-24T07:20:39.161-05:00  WARN 4205 --- [           main] org.hibernate.orm.deprecation            : HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-11-24T07:20:39.984-05:00  INFO 4205 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: 
+    create table game_data (
+        id bigint not null auto_increment,
+        attempts integer not null,
+        client_id varchar(255),
+        client_type varchar(255),
+        current_history TEXT,
+        game_mode varchar(255),
+        game_type varchar(255),
+        level varchar(255),
+        max_attempts integer,
+        max_value integer,
+        min_value integer,
+        result varchar(255),
+        score integer not null,
+        target integer,
+        update_time datetime(6),
+        user_count integer,
+        primary key (id)
+    ) engine=InnoDB
+2025-11-24T07:20:40.040-05:00  INFO 4205 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-11-24T07:20:40.426-05:00  WARN 4205 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-11-24T07:20:40.904-05:00  INFO 4205 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@35e3f3b8, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@13bf5fd, org.springframework.security.web.context.SecurityContextHolderFilter@4172c967, org.springframework.security.web.header.HeaderWriterFilter@67aaf882, org.springframework.web.filter.CorsFilter@2eafb4e7, org.springframework.security.web.authentication.logout.LogoutFilter@3113595e, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@78f1d29, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@7bb3294c, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@f391e52, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@32050628, org.springframework.security.web.access.ExceptionTranslationFilter@47400608, org.springframework.security.web.access.intercept.AuthorizationFilter@c247b02]
+2025-11-24T07:20:41.219-05:00  INFO 4205 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port 8080 (http) with context path ''
+2025-11-24T07:20:41.240-05:00  INFO 4205 --- [           main] com.game.GameServerApplication           : Started GameServerApplication in 5.123 seconds (process running for 5.661)
+2025-11-24T07:20:51.027-05:00  INFO 4205 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-11-24T07:20:51.028-05:00  INFO 4205 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2025-11-24T07:20:51.029-05:00  INFO 4205 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 1 ms
+2025-11-24T07:20:51.045-05:00  WARN 4205 --- [nio-8080-exec-1] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/' (previous null). Performing CorsConfiguration lookup. This is logged once only at WARN level, and every time at TRACE.
+2025-11-24T07:20:51.055-05:00  WARN 4205 --- [nio-8080-exec-1] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2025-11-24T08:49:21.429-05:00  WARN 4205 --- [l-1 housekeeper] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Thread starvation or clock leap detected (housekeeper delta=1h16m42s67ms726µs858ns).
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0 
+    order by
+        gd1_0.update_time desc
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0 
+    order by
+        gd1_0.update_time desc
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0 
+    order by
+        gd1_0.update_time desc
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0 
+    order by
+        gd1_0.update_time desc
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0 
+    order by
+        gd1_0.update_time desc
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0 
+    order by
+        gd1_0.update_time desc
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0 
+    order by
+        gd1_0.update_time desc
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0 
+    order by
+        gd1_0.update_time desc
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0 
+    order by
+        gd1_0.update_time desc
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0 
+    order by
+        gd1_0.update_time desc
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0 
+    order by
+        gd1_0.update_time desc
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0 
+    order by
+        gd1_0.update_time desc
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0 
+    order by
+        gd1_0.update_time desc
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0 
+    order by
+        gd1_0.update_time desc
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0 
+    order by
+        gd1_0.update_time desc
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0 
+    order by
+        gd1_0.update_time desc
+Hibernate: 
+    select
+        gd1_0.id,
+        gd1_0.attempts,
+        gd1_0.client_id,
+        gd1_0.client_type,
+        gd1_0.current_history,
+        gd1_0.game_mode,
+        gd1_0.game_type,
+        gd1_0.level,
+        gd1_0.max_attempts,
+        gd1_0.max_value,
+        gd1_0.min_value,
+        gd1_0.result,
+        gd1_0.score,
+        gd1_0.target,
+        gd1_0.update_time,
+        gd1_0.user_count 
+    from
+        game_data gd1_0 
+    order by
+        gd1_0.update_time desc

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>猜数字小游戏</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 未开始界面 -->
+        <div id="start-panel" class="panel active">
+            <h1 class="game-title">猜数字 · 小游园</h1>
+            <div class="button-group">
+                <button id="start-btn" class="big-btn">开始游戏</button>
+                <button id="settings-btn" class="big-btn">游戏设置</button>
+                <button id="history-btn" class="big-btn">历史记录</button>
+                <button id="exit-btn" class="big-btn">退出游戏</button>
+            </div>
+            <p class="version">版本 1.0</p>
+        </div>
+
+        <!-- 游戏界面 -->
+        <div id="game-panel" class="panel">
+            <div class="game-header">
+                <h2 id="game-mode-info">当前模式：猜数字模式</h2>
+                <p id="range-info">区间：0 ～ 100</p>
+            </div>
+            
+            <div class="game-body">
+                <div class="game-controls">
+                    <div class="input-section">
+                        <label for="guess-input">请输入你的数字：</label>
+                        <input type="text" id="guess-input" placeholder="输入整数">
+                    </div>
+                    <div class="button-section">
+                        <button id="submit-btn" class="game-btn">提交</button>
+                        <button id="give-up-btn" class="game-btn">放弃</button>
+                        <button id="pause-btn" class="game-btn">暂停</button>
+                        <button id="back-btn" class="game-btn">返回</button>
+                    </div>
+                </div>
+                
+                <div class="history-section">
+                    <h3>历史记录</h3>
+                    <div id="guess-history" class="history-content">
+                        <!-- 历史记录将在这里动态添加 -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="game-footer">
+                <p id="status-info">状态：准备就绪</p>
+            </div>
+        </div>
+
+        <!-- 历史记录界面 -->
+        <div id="history-panel" class="panel">
+            <h2>游戏历史记录</h2>
+            <div id="all-history" class="history-list">
+                <!-- 所有历史记录将在这里动态添加 -->
+                <p class="empty-history">暂无历史记录</p>
+            </div>
+            <div class="history-buttons">
+                <button id="clear-history-btn" class="action-btn">清空历史记录</button>
+                <button id="back-from-history" class="back-btn">返回</button>
+            </div>
+        </div>
+
+        <!-- 设置弹窗 -->
+        <div id="settings-modal" class="modal">
+            <div class="modal-content">
+                <h2>游戏设置</h2>
+                <div class="settings-group">
+                    <label>数值区间：</label>
+                    <div class="range-inputs">
+                        <input type="number" id="min-value" placeholder="最小值">
+                        <span>至</span>
+                        <input type="number" id="max-value" placeholder="最大值">
+                    </div>
+                </div>
+                
+                <div class="settings-group">
+                    <label>游戏模式：</label>
+                    <div class="mode-options">
+                        <label>
+                            <input type="radio" name="game-mode" value="guess" checked> 猜数字模式
+                        </label>
+                        <label>
+                            <input type="radio" name="game-mode" value="challenge"> 挑战模式
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="settings-group" id="attempts-setting">
+                    <label for="max-attempts">限定次数：</label>
+                    <input type="number" id="max-attempts" min="1" value="10">
+                </div>
+                
+                <div class="settings-group">
+                    <label>视觉设置：</label>
+                    <div class="visual-settings">
+                        <div>
+                            <label for="font-size">字体大小：</label>
+                            <input type="number" id="font-size" min="12" max="24" value="16">
+                        </div>
+                        <div>
+                            <label for="font-color">字体颜色：</label>
+                            <input type="color" id="font-color" value="#333333">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="modal-buttons">
+                    <button id="save-settings" class="modal-btn">保存</button>
+                    <button id="cancel-settings" class="modal-btn">取消</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 暂停弹窗 -->
+        <div id="pause-modal" class="modal">
+            <div class="modal-content">
+                <h2>游戏已暂停</h2>
+                <p id="pause-info">当前模式：猜数字模式</p>
+                <p id="pause-stats">已猜次数：0</p>
+                <button id="resume-btn" class="modal-btn">继续游戏</button>
+            </div>
+        </div>
+
+        <!-- 结果弹窗 -->
+        <div id="result-modal" class="modal">
+            <div class="modal-content">
+                <h2 id="result-title">恭喜你！</h2>
+                <p id="result-message">你猜对了！</p>
+                <div class="modal-buttons">
+                    <button id="play-again-btn" class="modal-btn">再玩一次</button>
+                    <button id="back-to-start-btn" class="modal-btn">返回首页</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

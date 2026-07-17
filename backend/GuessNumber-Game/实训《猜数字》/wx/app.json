@@ -1,0 +1,31 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/history/history"
+  ],
+  "window": {
+    "navigationBarTitleText": "猜数字小游戏",
+    "navigationBarBackgroundColor": "#f5f5f0",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#666",
+    "selectedColor": "#333",
+    "backgroundColor": "#f9f9f9",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "游戏",
+        "iconPath": "/images/game.png",
+        "selectedIconPath": "/images/game_selected.png"
+      },
+      {
+        "pagePath": "pages/history/history",
+        "text": "历史记录",
+        "iconPath": "/images/history.png",
+        "selectedIconPath": "/images/history_selected.png"
+      }
+    ]
+  }
+}

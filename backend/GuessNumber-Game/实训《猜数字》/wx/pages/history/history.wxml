@@ -1,0 +1,30 @@
+<view class="container">
+  <view class="title">游戏历史记录</view>
+  
+  <view class="history-list" wx:if="{{history.length > 0}}">
+    <view class="history-item" wx:for="{{history}}" wx:key="item.id">
+      <view class="history-header">
+        <view class="history-date">{{item.date}}</view>
+        <view class="history-status {{item.status === 'win' ? 'win' : (item.status === 'lose' ? 'lose' : 'giveup')}}">
+          {{item.status === 'win' ? '胜利' : (item.status === 'lose' ? '失败' : '放弃')}}
+        </view>
+      </view>
+      <view class="history-details">
+        <view class="detail-item">区间：{{item.min}} ~ {{item.max}}</view>
+        <view class="detail-item">模式：{{item.mode === 'challenge' ? '挑战模式(' + item.maxAttempts + '次)' : '猜数字模式'}}</view>
+        <view class="detail-item">尝试次数：{{item.attempts}}</view>
+        <view class="detail-item">正确答案：{{item.target}}</view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="empty-state" wx:if="{{history.length === 0}}">
+    <view class="empty-icon">📝</view>
+    <view class="empty-text">暂无游戏记录</view>
+    <button bindtap="goToGame" class="start-game-btn">开 始 新 游 戏</button>
+  </view>
+  
+  <button bindtap="clearHistory" class="clear-btn" wx:if="{{history.length > 0}}">
+    清空历史记录
+  </button>
+</view>
