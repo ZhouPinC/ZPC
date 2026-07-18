@@ -1,0 +1,190 @@
+/* pages/admin/dashboard/dashboard.wxss */
+.admin-dashboard {
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding-bottom: 40rpx;
+}
+
+/* 顶部栏 */
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  background: #fff;
+}
+
+.admin-header .title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.exit-btn {
+  font-size: 26rpx;
+  color: #666;
+  background: #f5f5f5;
+  border: none;
+  padding: 12rpx 24rpx;
+  border-radius: 30rpx;
+}
+
+/* 概览卡片 */
+.overview-card {
+  display: flex;
+  justify-content: space-around;
+  background: linear-gradient(135deg, #1296db 0%, #0d7ab8 100%);
+  margin: 20rpx;
+  padding: 40rpx 20rpx;
+  border-radius: 16rpx;
+}
+
+.overview-card .stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.overview-card .stat-value {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.overview-card .stat-label {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 8rpx;
+}
+
+/* 统计卡片 */
+.stats-card {
+  background: #fff;
+  margin: 20rpx;
+  padding: 30rpx;
+  border-radius: 16rpx;
+}
+
+.card-header {
+  margin-bottom: 20rpx;
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-around;
+}
+
+.stats-row .stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stats-row .stat-value {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #1296db;
+}
+
+.stats-row .stat-label {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+/* 快捷入口 */
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  background: #fff;
+  margin: 20rpx;
+  padding: 30rpx;
+  border-radius: 16rpx;
+}
+
+.action-item {
+  width: 25%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20rpx 0;
+}
+
+.action-icon {
+  width: 60rpx;
+  height: 60rpx;
+  margin-bottom: 12rpx;
+}
+
+.action-text {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 最近订单 */
+.recent-section {
+  background: #fff;
+  margin: 20rpx;
+  padding: 30rpx;
+  border-radius: 16rpx;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.section-more {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.order-list {
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.order-device {
+  font-size: 28rpx;
+  color: #333;
+  flex: 1;
+}
+
+.order-amount {
+  font-size: 28rpx;
+  color: #1296db;
+  margin: 0 30rpx;
+}
+
+.order-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.empty-tip {
+  text-align: center;
+  padding: 40rpx;
+  color: #999;
+  font-size: 28rpx;
+}

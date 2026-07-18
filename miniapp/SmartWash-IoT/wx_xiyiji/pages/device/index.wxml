@@ -1,0 +1,183 @@
+<view class="container {{!currentSn ? 'blur' : ''}}">
+  
+  <!-- 设备选择头部 -->
+  <view class="device-header" wx:if="{{deviceList.length > 0}}">
+    <scroll-view scroll-x class="device-list" enable-flex>
+      <view 
+        wx:for="{{deviceList}}" 
+        wx:key="id" 
+        class="device-item {{currentSn === item.deviceSn ? 'active' : ''}}"
+        bindtap="selectDevice"
+        data-sn="{{item.deviceSn}}">
+        <view class="status-dot {{item.status === 'RUNNING' ? 'dot-green' : (item.status === 'OFFLINE' ? 'dot-red' : (item.status === 'FAULT' ? 'dot-red' : 'dot-green'))}}"></view>
+        <view class="device-item-text">
+          <text class="device-item-name">{{item.name || ''}}</text>
+          <text class="device-item-sn">{{item.deviceSn}}</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <view class="status-card {{device.status === 'RUNNING' ? 'bg-running' : (device.status === 'PAUSED' ? 'bg-paused' : (device.status === 'FINISHED' ? 'bg-finished' : (device.status === 'FAULT' || device.status === 'OFFLINE' || !systemHealthy ? 'bg-fault' : 'bg-idle')))}}">
+    <view class="status-header">
+      <view class="status-title">当前状态</view>
+      <!-- 刷新按钮：在故障或离线状态显示 -->
+      <view wx:if="{{device.status === 'FAULT' || device.status === 'OFFLINE' || !systemHealthy}}" class="refresh-btn" bindtap="handleRefresh">
+        <text class="refresh-icon {{refreshing ? 'rotating' : ''}}">⟳</text>
+      </view>
+    </view>
+    <view class="status-text">{{statusText}}</view>
+    
+    <!-- 网络故障/离线状态：显示刷新提示和按钮 -->
+    <view class="status-desc" wx:if="{{!systemHealthy || device.status === 'FAULT' || device.status === 'OFFLINE'}}">
+      <view class="fault-tip">{{device.status === 'OFFLINE' ? '设备离线' : '网络连接异常'}}</view>
+      <view class="retry-btn" bindtap="handleRetryConnect">
+        <text>🔄 点击重新连接</text>
+      </view>
+    </view>
+    <!-- 完成状态：显示洗衣信息和取衣提示 -->
+    <view class="status-desc" wx:elif="{{device.status === 'FINISHED'}}">
+      <view class="mode-info">洗衣模式：{{currentModeName}}</view>
+      <view class="mode-info">工作时长：{{device.totalDuration || estimatedTime}} 分钟</view>
+      <view class="finish-tip">🎉 洗衣完成，请及时取走衣物</view>
+    </view>
+    <!-- 运行状态：显示当前模式和预计完成时间 -->
+    <view class="status-desc" wx:elif="{{device.status === 'RUNNING'}}">
+      <view class="mode-info">当前模式：{{currentModeName}}</view>
+      <view class="end-time">预计完成时间：{{estimatedEndTime}}</view>
+    </view>
+    <!-- 暂停状态：显示当前模式和剩余时间 -->
+    <view class="status-desc" wx:elif="{{device.status === 'PAUSED'}}">
+      <view class="mode-info">当前模式：{{currentModeName}}</view>
+      <view class="end-time">剩余时间：约 {{remainingMinutes}} 分钟</view>
+    </view>
+    <view class="status-desc" wx:else>
+      设备空闲，随时可洗
+    </view>
+  </view>
+
+  <view class="alert-box" wx:if="{{device.status === 'FAULT' && systemHealthy}}">
+    <icon type="warn" size="16" color="#ff4d4f"></icon>
+    <text>检测到设备异常，请检查设备！</text>
+  </view>
+
+  <view class="control-panel">
+    <view class="panel-title">操作面板</view>
+    
+    <view class="mode-selector">
+      <view class="mode-item {{selectedMode === 'standard' ? 'active' : ''}} {{device.status !== 'IDLE' ? 'disabled' : ''}}" bindtap="selectMode" data-mode="standard">
+        <view class="mode-name">标准洗</view>
+        <view class="mode-duration">30分钟</view>
+      </view>
+      <view class="mode-item {{selectedMode === 'quick' ? 'active' : ''}} {{device.status !== 'IDLE' ? 'disabled' : ''}}" bindtap="selectMode" data-mode="quick">
+        <view class="mode-name">快洗</view>
+        <view class="mode-duration">15分钟</view>
+      </view>
+      <view class="mode-item {{selectedMode === 'dehydration' ? 'active' : ''}} {{device.status !== 'IDLE' ? 'disabled' : ''}}" bindtap="selectMode" data-mode="dehydration">
+        <view class="mode-name">脱水</view>
+        <view class="mode-duration">10分钟</view>
+      </view>
+    </view>
+
+    <!-- 预估时间显示：只在空闲状态显示 -->
+    <view class="estimated-time-container" wx:if="{{device.status === 'IDLE'}}">
+      <view class="estimated-label">预估时间</view>
+      <view class="estimated-value">{{estimatedTime}} 分钟</view>
+    </view>
+
+    <view class="btn-group">
+      <!-- 空闲状态：显示启动按钮 -->
+      <button 
+        wx:if="{{device.status === 'IDLE'}}"
+        class="btn-start" 
+        bindtap="handleStart"
+        disabled="{{!systemHealthy}}">
+        立即启动
+      </button>
+
+      <!-- 运行状态：只显示暂停按钮 -->
+      <button 
+        wx:if="{{device.status === 'RUNNING'}}" 
+        class="btn-pause" 
+        bindtap="handlePause">
+        暂停
+      </button>
+
+      <!-- 暂停状态：显示继续和结束按钮 -->
+      <view wx:if="{{device.status === 'PAUSED'}}" class="paused-btn-group">
+        <button class="btn-continue" bindtap="handleContinue">继续</button>
+        <button class="btn-end" bindtap="handleEnd">结束洗衣</button>
+      </view>
+      
+      <!-- 完成状态：显示开门取衣按钮 -->
+      <button 
+        wx:if="{{device.status === 'FINISHED'}}"
+        class="btn-pickup" 
+        bindtap="handlePickup">
+        🚪 开门取衣
+      </button>
+      
+      <!-- 重置按钮：只在故障状态显示 -->
+      <button 
+        wx:if="{{device.status === 'FAULT'}}"
+        class="btn-reset" 
+        bindtap="handleReset">
+        重置设备状态
+      </button>
+    </view>
+  </view>
+
+  <!-- 支付方式选择弹窗 -->
+  <view class="payment-modal" wx:if="{{showPaymentModal}}">
+    <view class="payment-mask" bindtap="closePaymentModal"></view>
+    <view class="payment-content">
+      <view class="payment-header">
+        <text class="payment-title">选择支付方式</text>
+        <text class="payment-close" bindtap="closePaymentModal">×</text>
+      </view>
+      <view class="payment-amount">
+        <text class="amount-label">支付金额</text>
+        <text class="amount-value">¥{{paymentAmount}}</text>
+      </view>
+      <view class="payment-options">
+        <view class="payment-option" bindtap="handlePayment" data-method="balance">
+          <text class="option-icon">💰</text>
+          <text class="option-name">余额支付</text>
+          <text class="option-arrow">></text>
+        </view>
+        <view class="payment-option" bindtap="handlePayment" data-method="wechat">
+          <text class="option-icon">💳</text>
+          <text class="option-name">微信支付</text>
+          <text class="option-arrow">></text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 登录提示弹窗 -->
+  <view class="login-modal" wx:if="{{showLoginModal}}">
+    <view class="login-mask" bindtap="closeLoginModal"></view>
+    <view class="login-content">
+      <view class="login-icon">🔐</view>
+      <view class="login-title">当前未登录</view>
+      <view class="login-desc">请先登录后再使用洗衣服务</view>
+      <view class="login-btns">
+        <button class="btn-login-go" bindtap="goToLogin">去登录</button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 未绑定设备弹窗 -->
+  <view class="unlinked-modal" wx:if="{{showUnlinkedModal}}">
+    <view class="unlinked-mask" bindtap="closeUnlinkedModal"></view>
+    <view class="unlinked-content">
+      <view class="unlinked-icon">📱</view>
+      <view class="unlinked-title">您尚未关联设备</view>
+      <view class="unlinked-desc">请扫描设备二维码进行绑定</view>
+      <view class="unlinked-btns">
+        <button class="btn-scan" bindtap="handleScan">扫码绑定</button>
+      </view>
+    </view>
+  </view>
+
+</view>

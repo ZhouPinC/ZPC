@@ -1,0 +1,627 @@
+.container { padding: 20px; background: #f5f5f5; min-height: 100vh; }
+
+/* 设备选择头部 */
+.device-header {
+  height: 60rpx;
+  background: white;
+  border-radius: 30rpx;
+  padding: 5px 6rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.1);
+}
+
+/* 设备列表 - 横向滚动 */
+.device-list {
+  display: flex;
+  gap: 15rpx;
+}
+
+/* 设备项 - 包含状态点和名称 */
+.device-item {
+  height: 50rpx;
+  min-width: 90rpx;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 2px 10px;
+  margin: 0 5rpx;
+  background: #f0f0f0;
+  border-radius: 25rpx;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.device-item-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.device-item-name {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.device-item-sn {
+  font-size: 11px;
+  opacity: 0.75;
+}
+
+/* 设备项激活状态 */
+.device-item.active {
+  background: #1890ff;
+  color: white;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.3);
+}
+
+/* 状态点 - 显示设备状态 */
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+/* 状态点颜色 */
+.status-dot.dot-green {
+  background: #52c41a;
+  box-shadow: 0 0 8px rgba(82, 196, 26, 0.5);
+}
+
+.status-dot.dot-red {
+  background: #ff4d4f;
+  box-shadow: 0 0 8px rgba(255, 77, 79, 0.5);
+}
+
+.status-dot.dot-yellow {
+  background: #faad14;
+  box-shadow: 0 0 8px rgba(250, 173, 20, 0.5);
+}
+
+/* 设备状态映射 */
+.device-item .status-dot {
+  background: #52c41a; /* 默认绿色 */
+  box-shadow: 0 0 8px rgba(82, 196, 26, 0.5);
+}
+
+.device-item[data-status="RUNNING"] .status-dot,
+.device-item[data-status="IDLE"] .status-dot {
+  background: #52c41a;
+  box-shadow: 0 0 8px rgba(82, 196, 26, 0.5);
+}
+
+.device-item[data-status="PAUSED"] .status-dot {
+  background: #faad14;
+  box-shadow: 0 0 8px rgba(250, 173, 20, 0.5);
+}
+
+.device-item[data-status="OFFLINE"] .status-dot,
+.device-item[data-status="FAULT"] .status-dot {
+  background: #ff4d4f;
+  box-shadow: 0 0 8px rgba(255, 77, 79, 0.5);
+}
+
+.device-item[data-status="FINISHED"] .status-dot {
+  background: #1890ff;
+  box-shadow: 0 0 8px rgba(24, 144, 255, 0.5);
+}
+
+/* 设备项文字样式 */
+.device-item.active .device-item-name,
+.device-item.active .device-item-sn {
+  color: white;
+  opacity: 1;
+}
+
+/* 设备项悬停效果 */
+.device-item:active:not(.active) {
+  background: #e0e0e0;
+  transform: scale(0.98);
+}
+
+/* 状态卡片 */
+.status-card {
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+  color: white;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: all 0.5s;
+}
+/* 空闲状态：蓝色 */
+.bg-idle { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+/* 工作状态：黄色 */
+.bg-running { background: linear-gradient(135deg, #faed26 0%, #fee140 100%); }
+/* 暂停状态：红色 */
+.bg-paused { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%); }
+/* 完成状态：绿色 */
+.bg-finished { background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%); }
+/* 故障状态：红色 */
+.bg-fault { background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%); }
+
+/* 状态描述文本 */
+.status-desc {
+  margin-top: 10px;
+}
+
+.mode-info {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.end-time {
+  font-size: 16px;
+  margin-top: 8px;
+  font-weight: bold;
+}
+
+.finish-tip {
+  font-size: 16px;
+  margin-top: 12px;
+  font-weight: bold;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.status-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.status-title { font-size: 14px; opacity: 0.8; }
+.status-text { font-size: 32px; font-weight: bold; margin: 10px 0; }
+
+/* 刷新按钮 */
+.refresh-btn {
+  width: 36px;
+  height: 36px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.refresh-btn:active {
+  background: rgba(255,255,255,0.5);
+  transform: scale(0.95);
+}
+.refresh-icon {
+  font-size: 20px;
+  color: white;
+}
+.refresh-icon.rotating {
+  animation: rotate 1s linear infinite;
+}
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 故障提示 */
+.fault-tip {
+  font-size: 14px;
+  opacity: 0.9;
+  margin-top: 5px;
+}
+
+/* 重新连接按钮 */
+.retry-btn {
+  margin-top: 15px;
+  padding: 10px 25px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 20px;
+  display: inline-block;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+.retry-btn:active {
+  background: rgba(255,255,255,0.5);
+  transform: scale(0.95);
+}
+
+/* 警告框 */
+.alert-box {
+  background: #fff2f0;
+  border: 1px solid #ffccc7;
+  color: #ff4d4f;
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+/* 控制面板 */
+.control-panel {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+}
+.panel-title { font-weight: bold; margin-bottom: 15px; }
+
+.mode-selector { display: flex; gap: 10px; margin-bottom: 25px; }
+.mode-item {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+  background: #f0f0f0;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s;
+}
+.mode-item.active { background: #e6f7ff; color: #1890ff; border: 1px solid #1890ff; }
+.mode-item.disabled { opacity: 0.5; pointer-events: none; }
+.mode-item:active:not(.disabled) { transform: scale(0.95); }
+.mode-name { font-weight: bold; margin-bottom: 5px; }
+.mode-duration { font-size: 12px; color: #666; }
+
+/* 预估时间显示 */
+.estimated-time-container {
+  background: #fafafa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  text-align: center;
+  border: 1px solid #f0f0f0;
+}
+.estimated-label {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 5px;
+}
+.estimated-value {
+  font-size: 24px;
+  font-weight: bold;
+  color: #1890ff;
+}
+
+/* 按钮组 */
+.btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.btn-start {
+  background: #1890ff;
+  color: white;
+  border-radius: 25px;
+  transition: all 0.3s;
+  border: none;
+}
+.btn-start[disabled] { background: #d9d9d9; color: #b0b0b0; }
+.btn-start:active:not([disabled]) { transform: scale(0.95); }
+
+/* 暂停按钮 */
+.btn-pause {
+  background: #faad14;
+  color: white;
+  border-radius: 25px;
+  transition: all 0.3s;
+  border: none;
+}
+.btn-pause:active { transform: scale(0.95); }
+
+/* 暂停状态下的按钮组 */
+.paused-btn-group {
+  display: flex;
+  gap: 10px;
+}
+.btn-continue {
+  flex: 1;
+  background: #52c41a;
+  color: white;
+  border-radius: 25px;
+  transition: all 0.3s;
+  border: none;
+}
+.btn-continue:active { transform: scale(0.95); }
+
+.btn-end {
+  flex: 1;
+  background: white;
+  color: #ff4d4f;
+  border: 1px solid #ff4d4f;
+  border-radius: 25px;
+  transition: all 0.3s;
+}
+.btn-end:active { transform: scale(0.95); }
+
+/* 开门取衣按钮 */
+.btn-pickup {
+  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+  color: white;
+  border-radius: 25px;
+  transition: all 0.3s;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 15px 0;
+}
+.btn-pickup:active { transform: scale(0.95); }
+
+/* 重置按钮 */
+.btn-reset {
+  background: white;
+  color: #999;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  transition: all 0.3s;
+  font-size: 14px;
+}
+.btn-reset:active { 
+  transform: scale(0.95); 
+  background: #f5f5f5;
+}
+
+/* 支付弹窗 */
+.payment-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+}
+.payment-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+}
+.payment-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 20px 20px 0 0;
+  padding: 20px 20px 40px 20px;
+  padding-bottom: calc(110px + env(safe-area-inset-bottom));
+  animation: slideUp 0.3s ease;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.payment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.payment-title {
+  font-size: 18px;
+  font-weight: bold;
+}
+.payment-close {
+  font-size: 24px;
+  color: #999;
+  padding: 5px 10px;
+}
+.payment-amount {
+  text-align: center;
+  padding: 20px 0;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 20px;
+}
+.amount-label {
+  font-size: 14px;
+  color: #999;
+  display: block;
+  margin-bottom: 10px;
+}
+.amount-value {
+  font-size: 36px;
+  font-weight: bold;
+  color: #ff4d4f;
+}
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.payment-option {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  transition: all 0.3s;
+}
+.payment-option:active {
+  background: #f0f0f0;
+  transform: scale(0.98);
+}
+.option-icon {
+  font-size: 24px;
+  margin-right: 15px;
+}
+.option-name {
+  flex: 1;
+  font-size: 16px;
+}
+.option-arrow {
+  color: #ccc;
+  font-size: 18px;
+}
+
+
+/* 登录提示弹窗 */
+.login-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 150rpx;
+  z-index: 1003;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.login-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+}
+.login-content {
+  position: relative;
+  width: 280px;
+  background: white;
+  border-radius: 16px;
+  padding: 30px 20px;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to { opacity: 1; transform: scale(1); }
+}
+.login-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+}
+.login-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+.login-desc {
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 25px;
+}
+.login-btns {
+  display: flex;
+  gap: 15px;
+}
+
+.btn-login-go {
+  flex: 1;
+  background: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  padding: 10px 0;
+}
+.btn-login-cancel:active, .btn-login-go:active {
+  transform: scale(0.95);
+}
+
+/* 设备未关联弹窗 - 优化样式 */
+.unlinked-modal {
+  padding: 0 40rpx;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 150rpx;
+  z-index: 1002; /* 确保在最上层 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(0); /* 不应用模糊效果 */
+}
+
+.unlinked-content {
+  position: relative;
+  width: 85%;
+  max-width: 350px;
+  background: white;
+  border-radius: 20px;
+  padding: 40px 30px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  animation: popupFadeIn 0.3s ease-out;
+  backdrop-filter: blur(0); /* 确保内容清晰 */
+}
+
+@keyframes popupFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.unlinked-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+  color: #1890ff;
+}
+
+.unlinked-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.unlinked-desc {
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+.btn-scan {
+  background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 15px 0;
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 200px;
+}
+
+.btn-scan:active {
+  transform: scale(0.95);
+  background: linear-gradient(135deg, #40a9ff 0%, #1890ff 100%);
+}
+
+/* 去登录按钮 */
+.btn-unlinked-login {
+  background: linear-gradient(135deg, #1890ff 0%, #40a9ff 100%);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  font-size: 18px;
+  font-weight: bold;
+  padding: 15px 0;
+  transition: all 0.3s ease;
+  width: 100%;
+  max-width: 200px;
+}
+
+.btn-unlinked-login:active {
+  transform: scale(0.95);
+  background: linear-gradient(135deg, #40a9ff 0%, #1890ff 100%);
+}
+
+/* 页面模糊效果 - 仅当未关联设备时应用 */
+.container.blur {
+  filter: blur(0px);
+  transition: filter 0.3s ease;
+}

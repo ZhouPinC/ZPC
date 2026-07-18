@@ -1,0 +1,63 @@
+<!--pages/admin/finance/finance.wxml-->
+<view class="page-container">
+  <view class="page-header">
+    <text class="page-title">财务管理</text>
+    <button class="export-btn" bindtap="exportReport">导出报表</button>
+  </view>
+
+  <!-- 收益概览 -->
+  <view class="summary-card">
+    <view class="summary-item main">
+      <text class="summary-value">¥{{summary.totalIncome}}</text>
+      <text class="summary-label">累计收入</text>
+    </view>
+    <view class="summary-row">
+      <view class="summary-item">
+        <text class="summary-value">¥{{summary.todayIncome}}</text>
+        <text class="summary-label">今日收入</text>
+      </view>
+      <view class="summary-item">
+        <text class="summary-value">¥{{summary.monthIncome}}</text>
+        <text class="summary-label">本月收入</text>
+      </view>
+      <view class="summary-item">
+        <text class="summary-value">¥{{summary.pendingSettle}}</text>
+        <text class="summary-label">待结算</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 收益明细 -->
+  <view class="records-section">
+    <view class="section-header">
+      <text class="section-title">收益明细</text>
+    </view>
+    
+    <view class="record-list" wx:if="{{!loading}}">
+      <view wx:for="{{records}}" wx:key="id" class="record-item">
+        <view class="record-info">
+          <text class="record-device">{{item.deviceSn || '设备'}}</text>
+          <text class="record-time">{{item.createTime}}</text>
+        </view>
+        <view class="record-amount">
+          <text class="amount">+¥{{item.netIncome || item.amount}}</text>
+          <text class="status {{item.settleStatus === 'SETTLED' ? 'settled' : 'pending'}}">
+            {{item.settleStatus === 'SETTLED' ? '已结算' : '待结算'}}
+          </text>
+        </view>
+      </view>
+
+      <view wx:if="{{records.length === 0}}" class="empty-state">
+        <text>暂无收益记录</text>
+      </view>
+
+      <view wx:if="{{!hasMore && records.length > 0}}" class="no-more">
+        <text>没有更多了</text>
+      </view>
+    </view>
+
+    <view wx:if="{{loading}}" class="loading-state">
+      <text>加载中...</text>
+    </view>
+  </view>
+</view>

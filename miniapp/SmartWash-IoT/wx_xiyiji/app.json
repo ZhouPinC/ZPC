@@ -1,0 +1,58 @@
+{
+  "pages": [
+    "pages/device/index",
+    "pages/device/control",
+    "pages/add/index",
+    "pages/me/index",
+    "pages/me/profile/profile",
+    "pages/history/index",
+    "pages/common/login/login",
+    "pages/consumer/reservation/reservation"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "智洗 IoT",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#999999",
+    "selectedColor": "#1296db",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/device/index",
+        "text": "设备",
+        "iconPath": "images/device.png",
+        "selectedIconPath": "images/device_active.png"
+      },
+      {
+        "pagePath": "pages/add/index",
+        "text": "扫码",
+        "iconPath": "images/scan.png",
+        "selectedIconPath": "images/scan.png"
+      },
+      {
+        "pagePath": "pages/me/index",
+        "text": "我的",
+        "iconPath": "images/me.png",
+        "selectedIconPath": "images/me_active.png"
+      }
+    ]
+  },
+  "subPackages": [
+    {
+      "root": "pages/admin",
+      "pages": [
+        "dashboard/dashboard",
+        "devices/devices",
+        "users/users",
+        "finance/finance",
+        "statistics/statistics"
+      ]
+    }
+  ],
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

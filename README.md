@@ -20,6 +20,7 @@
 | 项目 | 简介 |
 |------|------|
 | [XiaoZhou-AI](./miniapp/XiaoZhou-AI/) | AI 对话应用（React + Gemini API） |
+| [SmartWash-IoT](./miniapp/SmartWash-IoT/) | 共享洗衣机物联网系统（微信小程序 + Spring Boot 后端） |
 
 ## 🎨 前端
 

@@ -1,0 +1,78 @@
+/* custom-tab-bar/index.wxss */
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 100rpx;
+  background: #fff;
+  display: flex;
+  padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.05);
+}
+
+.tab-bar-border {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 1rpx;
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.tab-bar-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10rpx 0;
+  position: relative;
+}
+
+.tab-icon {
+  width: 48rpx;
+  height: 48rpx;
+  margin-bottom: 6rpx;
+}
+
+.tab-text {
+  font-size: 22rpx;
+}
+
+/* 中间凸起按钮 */
+.center-item {
+  position: relative;
+}
+
+.center-btn {
+  position: absolute;
+  top: -50rpx;
+  width: 110rpx;
+  height: 110rpx;
+  background: linear-gradient(135deg, #1296db 0%, #0d7ab8 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8rpx 20rpx rgba(18, 150, 219, 0.4);
+  border: 6rpx solid #fff;
+}
+
+.center-btn:active {
+  transform: scale(0.95);
+}
+
+.center-icon {
+  width: 56rpx;
+  height: 56rpx;
+  filter: brightness(0) invert(1);
+}
+
+.center-text {
+  position: absolute;
+  bottom: 10rpx;
+  font-size: 22rpx;
+  color: #1296db;
+  font-weight: 500;
+}

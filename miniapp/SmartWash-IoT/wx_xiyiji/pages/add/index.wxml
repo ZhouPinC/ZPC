@@ -1,0 +1,59 @@
+<!--pages/add/index.wxml - 扫码页面-->
+<view class="scan-page">
+  <!-- 顶部装饰 -->
+  <view class="top-decoration"></view>
+  
+  <!-- 扫码区域 -->
+  <view class="scan-area">
+    <view class="scan-frame">
+      <view class="corner top-left"></view>
+      <view class="corner top-right"></view>
+      <view class="corner bottom-left"></view>
+      <view class="corner bottom-right"></view>
+      <view class="scan-line"></view>
+    </view>
+    <view class="scan-icon-wrapper" bindtap="scanToUse">
+      <image class="scan-icon" src="/images/scan.png" mode="aspectFit"></image>
+    </view>
+  </view>
+  
+  <!-- 提示文字 -->
+  <view class="scan-tips">
+    <text class="tip-title">扫描洗衣机二维码</text>
+    <text class="tip-desc">将二维码放入框内，即可自动扫描</text>
+  </view>
+  
+  <!-- 扫码按钮 -->
+  <view class="scan-btn-wrapper">
+    <button class="scan-btn {{scanning ? 'scanning' : ''}}" bindtap="scanToUse" disabled="{{scanning}}">
+      <text class="btn-icon">📷</text>
+      <text class="btn-text">{{scanning ? '扫描中...' : '点击扫码'}}</text>
+    </button>
+  </view>
+  
+  <!-- 手动输入 -->
+  <view class="manual-input" bindtap="manualInput">
+    <text>手动输入设备码</text>
+  </view>
+  
+  <!-- 使用说明 -->
+  <view class="usage-guide">
+    <view class="guide-title">使用说明</view>
+    <view class="guide-item">
+      <text class="guide-num">1</text>
+      <text class="guide-text">找到洗衣机上的二维码</text>
+    </view>
+    <view class="guide-item">
+      <text class="guide-num">2</text>
+      <text class="guide-text">点击扫码按钮扫描二维码</text>
+    </view>
+    <view class="guide-item">
+      <text class="guide-num">3</text>
+      <text class="guide-text">选择洗衣模式并支付</text>
+    </view>
+    <view class="guide-item">
+      <text class="guide-num">4</text>
+      <text class="guide-text">洗衣完成后取走衣物</text>
+    </view>
+  </view>
+</view>

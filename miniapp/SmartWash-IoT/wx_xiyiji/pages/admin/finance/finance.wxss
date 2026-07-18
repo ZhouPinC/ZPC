@@ -1,0 +1,169 @@
+/* pages/admin/finance/finance.wxss */
+.page-container {
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding-bottom: 40rpx;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  background: #fff;
+}
+
+.page-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.export-btn {
+  font-size: 26rpx;
+  color: #1296db;
+  background: #e6f7ff;
+  border: none;
+  padding: 12rpx 24rpx;
+  border-radius: 30rpx;
+}
+
+/* 收益概览 */
+.summary-card {
+  background: linear-gradient(135deg, #1296db 0%, #0d7ab8 100%);
+  margin: 20rpx;
+  padding: 40rpx;
+  border-radius: 16rpx;
+}
+
+.summary-item.main {
+  text-align: center;
+  margin-bottom: 30rpx;
+  padding-bottom: 30rpx;
+  border-bottom: 1rpx solid rgba(255, 255, 255, 0.2);
+}
+
+.summary-item.main .summary-value {
+  font-size: 56rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.summary-item.main .summary-label {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 8rpx;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-around;
+}
+
+.summary-row .summary-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.summary-row .summary-value {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #fff;
+}
+
+.summary-row .summary-label {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 8rpx;
+}
+
+/* 收益明细 */
+.records-section {
+  background: #fff;
+  margin: 20rpx;
+  border-radius: 16rpx;
+}
+
+.section-header {
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.record-list {
+  padding: 0 30rpx;
+}
+
+.record-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.record-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.record-device {
+  font-size: 28rpx;
+  color: #333;
+}
+
+.record-time {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+.record-amount {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.amount {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #52c41a;
+}
+
+.status {
+  font-size: 22rpx;
+  margin-top: 8rpx;
+}
+
+.status.settled {
+  color: #52c41a;
+}
+
+.status.pending {
+  color: #faad14;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60rpx 0;
+  color: #999;
+}
+
+.no-more {
+  text-align: center;
+  padding: 30rpx 0;
+  color: #999;
+  font-size: 24rpx;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 60rpx 0;
+  color: #999;
+}

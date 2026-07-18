@@ -1,0 +1,52 @@
+<!--pages/common/login/login.wxml-->
+<view class="login-container">
+  <!-- Logo区域 -->
+  <view class="logo-section">
+    <image class="logo" src="/images/icon_device.png" mode="aspectFit"></image>
+    <text class="app-name">智洗 IoT</text>
+    <text class="app-desc">智能共享洗衣服务</text>
+  </view>
+
+  <!-- 登录说明区域 -->
+  <view class="login-tips">
+    <view class="tip-item">
+      <text class="tip-icon">🔒</text>
+      <text class="tip-text">安全可靠，微信官方授权</text>
+    </view>
+    <view class="tip-item">
+      <text class="tip-icon">📱</text>
+      <text class="tip-text">仅需手机号，快速登录</text>
+    </view>
+    <view class="tip-item">
+      <text class="tip-icon">🚀</text>
+      <text class="tip-text">一键登录，便捷体验</text>
+    </view>
+  </view>
+
+  <!-- 登录按钮区域 -->
+  <view class="login-section">
+    <button 
+      class="login-btn wx-login-btn" 
+      bindtap="handleWxLogin"
+      loading="{{loading}}"
+      disabled="{{loading}}"
+    >
+      <text wx:if="{{!loading}}">微信一键登录</text>
+      <text wx:else>登录中...</text>
+    </button>
+    
+    <!-- 登录提示 -->
+    <view class="login-hint">
+      <text>登录即表示您已阅读并同意</text>
+      <text class="agreement-link" bindtap="onViewAgreement">《用户协议》</text>
+      <text>和</text>
+      <text class="agreement-link" bindtap="onViewPrivacy">《隐私政策》</text>
+    </view>
+  </view>
+
+  <!-- 帮助区域 -->
+  <view class="help-section">
+    <text class="help-text">登录遇到问题？</text>
+    <text class="help-link" bindtap="onViewHelp">查看帮助</text>
+  </view>
+</view>

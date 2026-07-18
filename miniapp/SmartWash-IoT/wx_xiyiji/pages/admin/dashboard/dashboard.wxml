@@ -1,0 +1,87 @@
+<!--pages/admin/dashboard/dashboard.wxml-->
+<view class="admin-dashboard">
+  <!-- 顶部栏 -->
+  <view class="admin-header">
+    <text class="title">管理中心</text>
+    <button class="exit-btn" bindtap="exitAdminMode">退出管理</button>
+  </view>
+
+  <!-- 设备概览卡片 -->
+  <view class="overview-card">
+    <view class="stat-item">
+      <text class="stat-value">{{overview.totalDevices}}</text>
+      <text class="stat-label">设备总数</text>
+    </view>
+    <view class="stat-item online">
+      <text class="stat-value">{{overview.onlineDevices}}</text>
+      <text class="stat-label">在线</text>
+    </view>
+    <view class="stat-item running">
+      <text class="stat-value">{{overview.runningDevices}}</text>
+      <text class="stat-label">运行中</text>
+    </view>
+    <view class="stat-item fault">
+      <text class="stat-value">{{overview.faultDevices}}</text>
+      <text class="stat-label">故障</text>
+    </view>
+  </view>
+
+  <!-- 今日数据 -->
+  <view class="stats-card">
+    <view class="card-header">
+      <text class="card-title">今日数据</text>
+    </view>
+    <view class="stats-row">
+      <view class="stat-item">
+        <text class="stat-value">{{todayStats.orderCount}}</text>
+        <text class="stat-label">订单数</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">¥{{todayStats.income}}</text>
+        <text class="stat-label">收入</text>
+      </view>
+      <view class="stat-item">
+        <text class="stat-value">{{todayStats.usageRate}}%</text>
+        <text class="stat-label">使用率</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快捷入口 -->
+  <view class="quick-actions">
+    <view class="action-item" bindtap="navigateToDevices">
+      <image src="/images/icon_device.png" class="action-icon"></image>
+      <text class="action-text">设备管理</text>
+    </view>
+    <view class="action-item" bindtap="navigateToUsers">
+      <image src="/images/me_active.png" class="action-icon"></image>
+      <text class="action-text">用户管理</text>
+    </view>
+    <view class="action-item" bindtap="navigateToFinance">
+      <image src="/images/icon_history.png" class="action-icon"></image>
+      <text class="action-text">财务管理</text>
+    </view>
+    <view class="action-item" bindtap="navigateToStatistics">
+      <image src="/images/icon_settings.png" class="action-icon"></image>
+      <text class="action-text">数据统计</text>
+    </view>
+  </view>
+
+  <!-- 最近订单 -->
+  <view class="recent-section">
+    <view class="section-header">
+      <text class="section-title">最近订单</text>
+      <text class="section-more" bindtap="navigateToFinance">查看全部 ></text>
+    </view>
+    <view class="order-list">
+      <view wx:for="{{recentOrders}}" wx:key="id" class="order-item">
+        <text class="order-device">{{item.deviceSn}}</text>
+        <text class="order-amount">¥{{item.amount}}</text>
+        <text class="order-time">{{item.createTime}}</text>
+      </view>
+      <view wx:if="{{recentOrders.length === 0}}" class="empty-tip">
+        暂无订单记录
+      </view>
+    </view>
+  </view>
+</view>

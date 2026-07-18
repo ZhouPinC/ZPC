@@ -1,0 +1,128 @@
+<!--pages/admin/statistics/statistics.wxml-->
+<view class="page-container">
+  <view class="page-header">
+    <text class="page-title">数据统计</text>
+  </view>
+
+  <!-- 标签切换 -->
+  <view class="tab-bar">
+    <view class="tab-item {{activeTab === 'overview' ? 'active' : ''}}" 
+          bindtap="switchTab" data-tab="overview">概览</view>
+    <view class="tab-item {{activeTab === 'usage' ? 'active' : ''}}" 
+          bindtap="switchTab" data-tab="usage">使用率</view>
+    <view class="tab-item {{activeTab === 'peak' ? 'active' : ''}}" 
+          bindtap="switchTab" data-tab="peak">高峰时段</view>
+    <view class="tab-item {{activeTab === 'program' ? 'active' : ''}}" 
+          bindtap="switchTab" data-tab="program">洗涤程序</view>
+  </view>
+
+  <!-- 概览 -->
+  <view class="tab-content" wx:if="{{activeTab === 'overview'}}">
+    <view class="stats-card">
+      <view class="card-title">设备状态</view>
+      <view class="stats-grid">
+        <view class="stat-item">
+          <text class="stat-value">{{overview.devices.total}}</text>
+          <text class="stat-label">总数</text>
+        </view>
+        <view class="stat-item online">
+          <text class="stat-value">{{overview.devices.online}}</text>
+          <text class="stat-label">在线</text>
+        </view>
+        <view class="stat-item running">
+          <text class="stat-value">{{overview.devices.running}}</text>
+          <text class="stat-label">运行中</text>
+        </view>
+        <view class="stat-item fault">
+          <text class="stat-value">{{overview.devices.fault}}</text>
+          <text class="stat-label">故障</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="stats-card">
+      <view class="card-title">今日数据</view>
+      <view class="stats-grid three">
+        <view class="stat-item">
+          <text class="stat-value">{{overview.today.orders}}</text>
+          <text class="stat-label">订单数</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">¥{{overview.today.income}}</text>
+          <text class="stat-label">收入</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">{{overview.today.usageRate}}%</text>
+          <text class="stat-label">使用率</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="stats-card">
+      <view class="card-title">本月数据</view>
+      <view class="stats-grid two">
+        <view class="stat-item">
+          <text class="stat-value">{{overview.month.orders}}</text>
+          <text class="stat-label">订单数</text>
+        </view>
+        <view class="stat-item">
+          <text class="stat-value">¥{{overview.month.income}}</text>
+          <text class="stat-label">收入</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 使用率 -->
+  <view class="tab-content" wx:if="{{activeTab === 'usage'}}">
+    <view class="stats-card">
+      <view class="card-title">设备使用率趋势</view>
+      <view wx:if="{{usageData.length === 0}}" class="empty-chart">
+        <text>暂无数据</text>
+      </view>
+      <view wx:else class="chart-placeholder">
+        <text>图表功能开发中</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 高峰时段 -->
+  <view class="tab-content" wx:if="{{activeTab === 'peak'}}">
+    <view class="stats-card">
+      <view class="card-title">高峰使用时段</view>
+      <view wx:if="{{peakHours.length === 0}}" class="empty-chart">
+        <text>暂无数据</text>
+      </view>
+      <view wx:else class="peak-list">
+        <view wx:for="{{peakHours}}" wx:key="hour" class="peak-item">
+          <text class="peak-hour">{{item.hour}}:00</text>
+          <view class="peak-bar">
+            <view class="peak-fill" style="width: {{item.percentage}}%"></view>
+          </view>
+          <text class="peak-count">{{item.count}}次</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 洗涤程序 -->
+  <view class="tab-content" wx:if="{{activeTab === 'program'}}">
+    <view class="stats-card">
+      <view class="card-title">洗涤程序使用统计</view>
+      <view wx:if="{{programStats.length === 0}}" class="empty-chart">
+        <text>暂无数据</text>
+      </view>
+      <view wx:else class="program-list">
+        <view wx:for="{{programStats}}" wx:key="name" class="program-item">
+          <text class="program-name">{{item.name}}</text>
+          <text class="program-count">{{item.count}}次</text>
+          <text class="program-percent">{{item.percentage}}%</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading-state">
+    <text>加载中...</text>
+  </view>
+</view>

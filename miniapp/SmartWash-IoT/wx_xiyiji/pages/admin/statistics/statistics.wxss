@@ -1,0 +1,186 @@
+/* pages/admin/statistics/statistics.wxss */
+.page-container {
+  min-height: 100vh;
+  background: #f5f7fa;
+  padding-bottom: 40rpx;
+}
+
+.page-header {
+  padding: 30rpx;
+  background: #fff;
+}
+
+.page-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 标签栏 */
+.tab-bar {
+  display: flex;
+  background: #fff;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.tab-item {
+  flex: 1;
+  text-align: center;
+  padding: 24rpx 0;
+  font-size: 28rpx;
+  color: #666;
+  position: relative;
+}
+
+.tab-item.active {
+  color: #1296db;
+  font-weight: 500;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60rpx;
+  height: 4rpx;
+  background: #1296db;
+  border-radius: 2rpx;
+}
+
+/* 内容区 */
+.tab-content {
+  padding: 20rpx;
+}
+
+.stats-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 24rpx;
+}
+
+.stats-grid {
+  display: flex;
+  justify-content: space-around;
+}
+
+.stats-grid.three {
+  justify-content: space-between;
+}
+
+.stats-grid.two {
+  justify-content: space-around;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-value {
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.stat-item.online .stat-value { color: #52c41a; }
+.stat-item.running .stat-value { color: #1296db; }
+.stat-item.fault .stat-value { color: #ff4d4f; }
+
+.stat-label {
+  font-size: 24rpx;
+  color: #999;
+  margin-top: 8rpx;
+}
+
+/* 图表占位 */
+.empty-chart, .chart-placeholder {
+  text-align: center;
+  padding: 60rpx 0;
+  color: #999;
+}
+
+/* 高峰时段 */
+.peak-list {
+  padding: 10rpx 0;
+}
+
+.peak-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.peak-hour {
+  width: 100rpx;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.peak-bar {
+  flex: 1;
+  height: 24rpx;
+  background: #f0f0f0;
+  border-radius: 12rpx;
+  margin: 0 20rpx;
+  overflow: hidden;
+}
+
+.peak-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1296db, #52c41a);
+  border-radius: 12rpx;
+}
+
+.peak-count {
+  width: 80rpx;
+  font-size: 24rpx;
+  color: #999;
+  text-align: right;
+}
+
+/* 洗涤程序 */
+.program-list {
+  padding: 10rpx 0;
+}
+
+.program-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.program-name {
+  flex: 1;
+  font-size: 28rpx;
+  color: #333;
+}
+
+.program-count {
+  font-size: 26rpx;
+  color: #666;
+  margin-right: 20rpx;
+}
+
+.program-percent {
+  font-size: 26rpx;
+  color: #1296db;
+  font-weight: 500;
+}
+
+.loading-state {
+  text-align: center;
+  padding: 60rpx 0;
+  color: #999;
+}

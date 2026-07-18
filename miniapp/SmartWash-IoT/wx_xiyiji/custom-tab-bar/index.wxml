@@ -1,0 +1,25 @@
+<!--custom-tab-bar/index.wxml-->
+<view class="tab-bar">
+  <view class="tab-bar-border"></view>
+  <view 
+    wx:for="{{list}}" 
+    wx:key="index" 
+    class="tab-bar-item {{item.isCenter ? 'center-item' : ''}}" 
+    data-path="{{item.pagePath}}" 
+    data-index="{{index}}" 
+    bindtap="switchTab"
+  >
+    <!-- 中间凸起按钮 -->
+    <view wx:if="{{item.isCenter}}" class="center-btn">
+      <image class="center-icon" src="{{item.iconPath}}"></image>
+    </view>
+    <!-- 普通按钮 -->
+    <block wx:else>
+      <image class="tab-icon" src="{{selected === index ? item.selectedIconPath : item.iconPath}}"></image>
+      <view class="tab-text" style="color: {{selected === index ? selectedColor : color}}">{{item.text}}</view>
+    </block>
+    
+    <!-- 中间按钮文字 -->
+    <view wx:if="{{item.isCenter}}" class="center-text">{{item.text}}</view>
+  </view>
+</view>

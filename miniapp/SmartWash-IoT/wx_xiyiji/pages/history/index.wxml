@@ -1,0 +1,57 @@
+<view class="container">
+  <!-- 加载中 -->
+  <view wx:if="{{loading}}" class="loading">
+    <text>加载中...</text>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:elif="{{empty}}" class="empty">
+    <view class="empty-icon">📋</view>
+    <text>暂无洗衣记录</text>
+    <text class="empty-tip">使用洗衣机后，记录将显示在这里</text>
+  </view>
+
+  <!-- 历史记录列表 -->
+  <view wx:else class="history-list">
+    <block wx:for="{{list}}" wx:key="id">
+      <view class="card">
+        <view class="card-header">
+          <view class="device-info">
+            <text class="device-name">{{item.deviceSn}}</text>
+            <text class="order-no">订单号: {{item.orderNo}}</text>
+          </view>
+          <text class="status {{item.status === 'FINISHED' ? 'status-success' : (item.status === 'RUNNING' || item.status === 'PAUSED' ? 'status-running' : 'status-default')}}">
+            {{item.statusText}}
+          </text>
+        </view>
+        
+        <view class="card-body">
+          <view class="info-row">
+            <text class="label">洗衣模式</text>
+            <text class="value">{{item.washModeName}}</text>
+          </view>
+          <view class="info-row">
+            <text class="label">工作时长</text>
+            <text class="value">{{item.durationMinutes}} 分钟</text>
+          </view>
+          <view class="info-row">
+            <text class="label">下单时间</text>
+            <text class="value">{{item.createTime}}</text>
+          </view>
+          <view class="info-row" wx:if="{{item.endTime && item.endTime !== '-'}}">
+            <text class="label">完成时间</text>
+            <text class="value">{{item.endTime}}</text>
+          </view>
+          <view class="info-row">
+            <text class="label">支付方式</text>
+            <text class="value">{{item.payMethod}}</text>
+          </view>
+        </view>
+        
+        <view class="card-footer">
+          <text class="amount">¥ {{item.amount}}</text>
+        </view>
+      </view>
+    </block>
+  </view>
+</view>

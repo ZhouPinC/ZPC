@@ -1,0 +1,44 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: iot-wash-backend
+  
+  # 数据库配置 (使用MySQL数据库)
+  datasource:
+    url: jdbc:mysql://localhost:3306/iot_wash_db?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: ******
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # JPA 配置 (自动建表/更新表结构)
+  jpa:
+    hibernate:
+      ddl-auto: update  # 开发阶段用 update，它会自动根据 Entity 创建表
+    show-sql: true      # 控制台打印 SQL，方便调试
+
+# 自定义 MQTT 配置 (为模块 C 预留)
+mqtt:
+  broker-url: tcp://broker.emqx.io:1883  # 这里先用 EMQX 的公共测试服务器，后面换你自己的
+  client-id: wash-backend-server-001
+  default-topic: status/+
+
+# JWT配置
+jwt:
+  secret: ******
+  expiration: 15552000000  # 180天 (毫秒)
+
+# 微信小程序配置
+wechat:
+  appid: ******
+  secret: ******
+
+# 管理员配置
+admin:
+  password: ${ADMIN_PASSWORD:******}
+
+# 平台配置
+platform:
+  fee:
+    rate: 0.10  # 平台服务费率 10%

@@ -1,0 +1,57 @@
+<!--pages/admin/users/users.wxml-->
+<view class="page-container">
+  <view class="page-header">
+    <text class="page-title">用户管理</text>
+    <text class="page-subtitle">管理用户及其绑定设备</text>
+  </view>
+
+  <view class="user-list" wx:if="{{!loading}}">
+    <view wx:for="{{users}}" wx:key="id" class="user-card">
+      <!-- 用户信息头部：用户名:手机号 -->
+      <view class="user-header" bindtap="toggleUserDevices" data-id="{{item.id}}">
+        <image class="user-avatar" src="{{item.avatarUrl || '/images/me.png'}}" mode="aspectFill"></image>
+        <view class="user-info">
+          <view class="user-title">
+            <text class="user-name">{{item.nickname || item.nickName || '用户' + item.id}}</text>
+            <text class="user-phone">{{item.phone || '未绑定手机'}}</text>
+          </view>
+          <view class="user-meta">
+            <text class="device-count">绑定设备: {{item.bindDevices.length || 0}}</text>
+            <text class="user-balance">余额: ¥{{item.balance || '0.00'}}</text>
+          </view>
+        </view>
+        <view class="expand-icon {{expandedUserId === item.id ? 'expanded' : ''}}">▼</view>
+      </view>
+      
+      <!-- 绑定设备列表（展开时显示） -->
+      <view class="device-list-section" wx:if="{{expandedUserId === item.id}}">
+        <view wx:if="{{!item.bindDevices || item.bindDevices.length === 0}}" class="no-device">
+          <text>该用户暂未绑定设备</text>
+        </view>
+        <view wx:for="{{item.bindDevices}}" wx:for-item="device" wx:key="id" class="device-item">
+          <view class="device-info-row">
+            <view class="device-status-dot {{device.status === 'RUNNING' ? 'dot-running' : (device.status === 'IDLE' ? 'dot-idle' : 'dot-offline')}}"></view>
+            <view class="device-detail">
+              <text class="device-sn">{{device.deviceSn}}</text>
+              <text class="device-name">{{device.name || '洗衣机'}}</text>
+            </view>
+          </view>
+          <button class="unbind-btn" 
+                  catchtap="unbindUserDevice" 
+                  data-userid="{{item.id}}" 
+                  data-deviceid="{{device.id}}"
+                  data-devicesn="{{device.deviceSn}}">解绑</button>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{users.length === 0}}" class="empty-state">
+      <text class="empty-icon">👥</text>
+      <text class="empty-text">暂无用户数据</text>
+    </view>
+  </view>
+
+  <view wx:if="{{loading}}" class="loading-state">
+    <text>加载中...</text>
+  </view>
+</view>

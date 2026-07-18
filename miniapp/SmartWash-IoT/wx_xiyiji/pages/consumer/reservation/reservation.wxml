@@ -1,0 +1,75 @@
+<!--pages/consumer/reservation/reservation.wxml-->
+<view class="reservation-page">
+  <!-- 设备信息 -->
+  <view class="device-info" wx:if="{{deviceInfo}}">
+    <text class="device-sn">{{deviceInfo.deviceSn || '设备'}}</text>
+    <text class="device-location">{{deviceInfo.location || ''}}</text>
+  </view>
+
+  <!-- 日期选择 -->
+  <view class="section">
+    <view class="section-title">选择日期</view>
+    <scroll-view class="date-list" scroll-x>
+      <view 
+        wx:for="{{dateList}}" 
+        wx:key="date"
+        class="date-item {{selectedDate === item.date ? 'selected' : ''}}"
+        bindtap="onDateSelect"
+        data-date="{{item.date}}"
+      >
+        <text class="date-day">{{item.day}}</text>
+        <text class="date-display">{{item.display}}</text>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 时段选择 -->
+  <view class="section">
+    <view class="section-title">选择时段</view>
+    
+    <view wx:if="{{loading}}" class="loading-tip">
+      <text>加载中...</text>
+    </view>
+    
+    <view wx:elif="{{timeSlots.length === 0}}" class="empty-tip">
+      <text>暂无可预约时段</text>
+    </view>
+    
+    <view wx:else class="slot-grid">
+      <view 
+        wx:for="{{timeSlots}}" 
+        wx:key="index"
+        class="slot-item {{item.available ? '' : 'disabled'}} {{selectedSlot && selectedSlot.startTime === item.startTime ? 'selected' : ''}}"
+        bindtap="onSlotSelect"
+        data-index="{{index}}"
+      >
+        <text class="slot-time">{{item.startTime}}-{{item.endTime}}</text>
+        <text class="slot-status" wx:if="{{!item.available}}">{{item.reason || '不可用'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 预约信息确认 -->
+  <view class="confirm-section" wx:if="{{selectedSlot}}">
+    <view class="confirm-row">
+      <text class="label">预约日期</text>
+      <text class="value">{{selectedDate}}</text>
+    </view>
+    <view class="confirm-row">
+      <text class="label">预约时段</text>
+      <text class="value">{{selectedSlot.startTime}} - {{selectedSlot.endTime}}</text>
+    </view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-bar">
+    <button 
+      class="submit-btn {{!selectedSlot ? 'disabled' : ''}}"
+      bindtap="onSubmit"
+      disabled="{{!selectedSlot || submitting}}"
+      loading="{{submitting}}"
+    >
+      确认预约
+    </button>
+  </view>
+</view>
